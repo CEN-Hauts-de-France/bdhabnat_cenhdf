@@ -1,0 +1,236 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ bdhabnat
+                                 A QGIS plugin
+ Plugin de saisie d'habitats naturels dans QGIS
+                              -------------------
+        begin                : 2015-08-25
+        git sha              : $Format:%H$
+        copyright            : (C) 2015 by Conseravtoire d'Espaces Naturels du Nord - Pas-de-Calais
+        email                : vincent.damoy@espaces-naturels.fr
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
+from PyQt4 import QtGui, QtCore
+from qgis.core import *
+# Initialize Qt resources from file resources.py
+import resources_rc
+# Import the code for the dialog
+from bdhabnat_dialog import bdhabnatDialog
+import os.path
+
+
+class bdhabnat:
+    """QGIS Plugin Implementation."""
+
+    def __init__(self, iface):
+        """Constructor.
+
+        :param iface: An interface instance that will be passed to this class
+            which provides the hook by which you can manipulate the QGIS
+            application at run time.
+        :type iface: QgsInterface
+        """
+        # Save reference to the QGIS interface
+        self.iface = iface
+        # initialize plugin directory
+        self.plugin_dir = os.path.dirname(__file__)
+        # initialize locale
+        locale = QtCore.QSettings().value('locale/userLocale')[0:2]
+        locale_path = os.path.join(
+            self.plugin_dir,
+            'i18n',
+            'bdhabnat_{}.qm'.format(locale))
+
+        if os.path.exists(locale_path):
+            self.translator = QtCore.QTranslator()
+            self.translator.load(locale_path)
+
+            if QtCore.qVersion() > '4.3.3':
+                QtCore.QCoreApplication.installTranslator(self.translator)
+
+        # Create the dialog (after translation) and keep reference
+        self.dlg = bdhabnatDialog(iface)
+
+        # Declare instance attributes
+        self.actions = []
+        self.menu = self.tr(u'&BD Habnat')
+        # TODO: We are going to let the user set this up in a future iteration
+        self.toolbar = self.iface.addToolBar(u'bdhabnat')
+        self.toolbar.setObjectName(u'bdhabnat')
+
+    # noinspection PyMethodMayBeStatic
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
+        return QtCore.QCoreApplication.translate('bdhabnat', message)
+
+
+    def add_action(
+        self,
+        icon_path,
+        text,
+        callback,
+        enabled_flag=True,
+        add_to_menu=True,
+        add_to_toolbar=True,
+        status_tip=None,
+        whats_this=None,
+        parent=None):
+        """Add a toolbar icon to the toolbar.
+
+        :param icon_path: Path to the icon for this action. Can be a resource
+            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
+        :type icon_path: str
+
+        :param text: Text that should be shown in menu items for this action.
+        :type text: str
+
+        :param callback: Function to be called when the action is triggered.
+        :type callback: function
+
+        :param enabled_flag: A flag indicating if the action should be enabled
+            by default. Defaults to True.
+        :type enabled_flag: bool
+
+        :param add_to_menu: Flag indicating whether the action should also
+            be added to the menu. Defaults to True.
+        :type add_to_menu: bool
+
+        :param add_to_toolbar: Flag indicating whether the action should also
+            be added to the toolbar. Defaults to True.
+        :type add_to_toolbar: bool
+
+        :param status_tip: Optional text to show in a popup when mouse pointer
+            hovers over the action.
+        :type status_tip: str
+
+        :param parent: Parent widget for the new action. Defaults None.
+        :type parent: QWidget
+
+        :param whats_this: Optional text to show in the status bar when the
+            mouse pointer hovers over the action.
+
+        :returns: The action that was created. Note that the action is also
+            added to self.actions list.
+        :rtype: QtGui.QAction
+        """
+
+        icon = QtGui.QIcon(icon_path)
+        action = QtGui.QAction(icon, text, parent)
+        action.triggered.connect(callback)
+        action.setEnabled(enabled_flag)
+
+        if status_tip is not None:
+            action.setStatusTip(status_tip)
+
+        if whats_this is not None:
+            action.setWhatsThis(whats_this)
+
+        if add_to_toolbar:
+            self.toolbar.addAction(action)
+
+        if add_to_menu:
+            self.iface.addPluginToMenu(
+                self.menu,
+                action)
+
+        self.actions.append(action)
+
+        return action
+
+    def initGui(self):
+        """Create the menu entries and toolbar icons inside the QGIS GUI."""
+
+        icon_path = ':/plugins/bdhabnat/icon.png'
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Saisir des données d''habitats naturels'),
+            callback=self.run,
+            parent=self.iface.mainWindow())
+
+
+    def unload(self):
+        """Removes the plugin menu item and icon from QGIS GUI."""
+        for action in self.actions:
+            self.iface.removePluginMenu(
+                self.tr(u'&BD Habnat'),
+                action)
+            self.iface.removeToolBarIcon(action)
+        # remove the toolbar
+        del self.toolbar
+
+
+    def run(self):
+        self.noEntity = 'False'
+        self.verif_geom()
+        if self.noEntity == 'True':
+            return
+        else:
+            """Run method that performs all the real work"""
+            # show the dialog
+            self.dlg.show()
+            # Run the dialog event loop
+            result = self.dlg.exec_()
+            # See if OK was pressed
+            if result:
+                # Do something useful here - delete the line containing pass and
+                # substitute with your code.
+                pass
+
+
+
+    def verif_geom(self):
+        # layer = la couche active. Si elle n'existe pas (pas de couche sélectionnée), alors lancer le message d'erreur et fermer la fenêtre.
+        layer=self.iface.activeLayer()
+        # construction du message d'erreur, qui sera utilisé si aucune couche ou aucune entité n'est sélectionnée
+        messlayer=QtGui.QMessageBox()
+        messlayer.setInformativeText(u'Merci de sélectionner une couche de vecteurs et un ou plusieurs polygones.')
+        messlayer.setStandardButtons(QtGui.QMessageBox.Ok)
+        messlayer.setIcon(QtGui.QMessageBox.Warning)
+
+        if not layer:
+            #S'il n'y a aucune couche active
+            messlayer.setText(u'Aucune couche SIG sélectionnée')
+            ret = messlayer.exec_()
+            self.noEntity = 'True'
+            return
+        # Attention : au contraire de ce qu'on a fait dans operationdialog.py, ne pas utiliser "self" en premier paramètre de
+        # QMessageBox (il faut le widget parent), car ici self désigne une classe qui n'est pas un QWidget. 
+        # Avec self.dlg_ope, la fenêtre "operation" devient parent => plus d'erreur "parameter 1 : unexpected 'instance'".
+        # return permet de quitter la fonction sans exécuter la suite. D'où, plus de message d'erreur parce que 
+        # la méthode "geometrytype" d'un "active layer" vide n'existe pas.
+        
+        else:
+            # S'il y a une couche active, mais que c'est un raster
+            if layer.type() == QgsMapLayer.RasterLayer:
+                messlayer.setText(u'La couche SIG sélectionnée est une image')
+                ret = messlayer.exec_()
+                self.noEntity = 'True'
+                return
+            else:
+                #Si la couche active est bien un vecteur, mais aucune entité n'est sélectionnée
+                selection=self.iface.activeLayer().selectedFeatures()
+                if not selection:
+                    messlayer.setText(u'Aucune entité sélectionnée')
+                    ret = messlayer.exec_()
+                    self.noEntity = 'True'
+                    return
