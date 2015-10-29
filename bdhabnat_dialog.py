@@ -69,7 +69,7 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
 
         # Remplir la combobox "cbx_habref" avec les noms de référentiels issus de la table "t_liste_ref"
         query_ref = QtSql.QSqlQuery(self.db)
-        if query_ref.exec_('select id_ref, nom_ref, code_ref from bd_habnat.t_liste_ref order by nom_ref'):
+        if query_ref.exec_('select id_ref, nom_ref, code_ref from bd_habnat.t_liste_ref order by id_ref'):
             while query_ref.next():
                 self.cbx_habref.addItem(query_ref.value(1), query_ref.value(2) )
 
@@ -222,6 +222,7 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         zr_thegeom = thegeom,\
         zr_peupleraie = str(self.chx_peupleraie.isChecked()).lower(),\
         zr_idmosaik = id_mosaik)
+        print query
         ok = querysauvhab.exec_(query)
         if not ok:
             QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')

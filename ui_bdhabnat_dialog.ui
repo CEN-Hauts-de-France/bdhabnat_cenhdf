@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>482</width>
-    <height>529</height>
+    <width>718</width>
+    <height>643</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -37,8 +37,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>490</y>
+     <x>360</x>
+     <y>600</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -53,15 +53,27 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>174</x>
-     <y>6</y>
-     <width>1381</width>
-     <height>461</height>
+     <x>180</x>
+     <y>10</y>
+     <width>302</width>
+     <height>471</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="vlay_cbx">
+    <property name="spacing">
+     <number>4</number>
+    </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
     <item>
      <widget class="QComboBox" name="cbx_codesite">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="contextMenuPolicy">
        <enum>Qt::DefaultContextMenu</enum>
       </property>
@@ -75,6 +87,12 @@
     </item>
     <item>
      <widget class="QComboBox" name="cbx_auteur">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="contextMenuPolicy">
        <enum>Qt::DefaultContextMenu</enum>
       </property>
@@ -87,13 +105,33 @@
      </widget>
     </item>
     <item>
-     <widget class="QDateEdit" name="dat_datedeb"/>
+     <widget class="QDateEdit" name="dat_datedeb">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
     </item>
     <item>
-     <widget class="QDateEdit" name="dat_datefin"/>
+     <widget class="QDateEdit" name="dat_datefin">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QComboBox" name="cbx_habref">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="editable">
        <bool>false</bool>
       </property>
@@ -111,13 +149,19 @@
     <item>
      <widget class="QComboBox" name="cbx_hablat">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="maxVisibleItems">
-       <number>20</number>
+       <number>30</number>
       </property>
       <property name="sizeAdjustPolicy">
        <enum>QComboBox::AdjustToMinimumContentsLength</enum>
@@ -135,13 +179,33 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="txt_codeeur27"/>
+     <widget class="QLineEdit" name="txt_codeeur27">
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="txt_codecorine"/>
+     <widget class="QLineEdit" name="txt_codecorine">
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QComboBox" name="cbx_pourcent">
@@ -150,6 +214,12 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>60</width>
+        <height>16777215</height>
+       </size>
       </property>
       <property name="currentIndex">
        <number>5</number>
@@ -188,6 +258,12 @@
     </item>
     <item>
      <widget class="QCheckBox" name="chx_patrimoine">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="text">
        <string>Cochez si habitat retenu</string>
       </property>
@@ -195,6 +271,12 @@
     </item>
     <item>
      <widget class="QCheckBox" name="chx_peupleraie">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="text">
        <string>Cochez si peupleraie</string>
       </property>
@@ -207,7 +289,7 @@
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>145</width>
+     <width>147</width>
      <height>461</height>
     </rect>
    </property>
@@ -218,14 +300,14 @@
     <item>
      <widget class="QLabel" name="lbl_codesite">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;code du site :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Code du site :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="lbl_auteur">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;auteur :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Auteur :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
        <cstring>cbx_auteur</cstring>
@@ -235,21 +317,21 @@
     <item>
      <widget class="QLabel" name="lbl_datdeb">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;date de début :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Date de début :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="lbl_datefin">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;date de fin :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Date de fin :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="lbl_habref">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;référentiel Habitat :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Référentiel Habitat :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
        <cstring>cbx_habref</cstring>
@@ -266,7 +348,7 @@
        </font>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;nom 1 habitat (latin) :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Nom 1 habitat (latin) :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
        <cstring>cbx_hablat</cstring>
@@ -281,14 +363,14 @@
        </font>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;nom 2 habitat (fr) :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Nom 2 habitat (fr) :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="lbl_codeeur27">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;code EUR27 :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code EUR27 :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
        <cstring>txt_codeeur27</cstring>
@@ -298,7 +380,7 @@
     <item>
      <widget class="QLabel" name="lbl_codecorine">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;code Corine :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code Corine :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
        <cstring>txt_codecorine</cstring>
@@ -315,7 +397,7 @@
     <item>
      <widget class="QLabel" name="lbl_patrimoine">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;patrimonialité :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Patrimonialité :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
        <cstring>chx_patrimoine</cstring>
@@ -325,7 +407,7 @@
     <item>
      <widget class="QLabel" name="lbl_peupleraie">
       <property name="text">
-       <string>peupleraie</string>
+       <string>Peupleraie</string>
       </property>
       <property name="buddy">
        <cstring>chx_patrimoine</cstring>
@@ -334,13 +416,228 @@
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="lbl_mep_2">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>350</y>
+     <width>161</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>A remplir pour la mise en page cartographique</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>350</y>
+     <width>20</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>500</y>
+     <width>146</width>
+     <height>58</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="vertlay_lblevol">
+    <property name="spacing">
+     <number>22</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="lbl_evol">
+      <property name="text">
+       <string>Evolution de l'habitat</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignRight">
+     <widget class="QLabel" name="lbl_facies">
+      <property name="text">
+       <string>Faciès à ...</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>500</y>
+     <width>301</width>
+     <height>62</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QComboBox" name="cbx_evol">
+      <item>
+       <property name="text">
+        <string>Faciès habitats :</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>-  à : (compléter dans la zone de texte ci-dessous)</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- eutrophe</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- ourléifié</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- embroussaillé</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- écorché</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Forme : </string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- pionnière</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- rase</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- haute</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>- mature</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Fragmentaire</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Dégradé</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Piétiné</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Rudéralisé</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="txt_facies"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>410</y>
+     <width>181</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="lbl_codecorine_mep">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code(s) Corine :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="buddy">
+       <cstring>txt_codecorine</cstring>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="txt_corine_mep"/>
+    </item>
+    <item>
+     <widget class="QLabel" name="lbl_codeeur27_mep">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code(s) EUR27 :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="buddy">
+       <cstring>txt_codeeur27</cstring>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="txt_eur27_mep"/>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <tabstops>
+  <tabstop>cbx_codesite</tabstop>
   <tabstop>cbx_auteur</tabstop>
+  <tabstop>dat_datedeb</tabstop>
+  <tabstop>dat_datefin</tabstop>
   <tabstop>cbx_habref</tabstop>
+  <tabstop>cbx_hablat</tabstop>
+  <tabstop>cbx_habfr</tabstop>
   <tabstop>txt_codeeur27</tabstop>
   <tabstop>txt_codecorine</tabstop>
+  <tabstop>cbx_pourcent</tabstop>
   <tabstop>chx_patrimoine</tabstop>
+  <tabstop>chx_peupleraie</tabstop>
+  <tabstop>cbx_evol</tabstop>
+  <tabstop>txt_facies</tabstop>
+  <tabstop>txt_corine_mep</tabstop>
+  <tabstop>txt_eur27_mep</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
