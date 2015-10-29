@@ -160,9 +160,53 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         else :
             print u'La projection de la couche active n\'est pas supportée'
 
+
+        #gestion de l'identifiant id_mosaik, servant à regrouper les enregistrements appartenant à une même mosaïque d'habitats
+        pourcent = int(self.cbx_pourcent.itemText(self.cbx_pourcent.currentIndex()))
+        if pourcent > 99 :
+            print ">99"
+            id_mosaik = 0
+        else :
+            querymosaik = QtSql.QSqlQuery(self.db)
+            qmosaik = u"""SELECT id_hab_ce, date_fin, pourcent,the_geom, peupleraie, id_mosaik FROM bd_habnat.t_ce_habnat_surf WHERE the_geom = {zr_thegeom} AND date_fin = '{zr_datefin}' AND peupleraie = 'f' """.format (\
+            zr_thegeom = thegeom,\
+            zr_datefin = self.dat_datefin.date().toPyDate().strftime("%Y-%m-%d"))
+            print qmosaik
+            ok = querymosaik.exec_(qmosaik)
+            if not ok:
+                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête Mosaik ratée')
+            if querymosaik.size() > 0 :
+                print "on est deja dans la mosaique"
+                sumprct = 0
+                while querymosaik.next() :
+                    sumprct += int(querymosaik.value(2))
+                sumprct += pourcent
+                if sumprct > 100 :
+                    QtGui.QMessageBox.warning(self, 'Alerte', u'La somme des pourcentages d'u'habitats dépasse 100 % dans la mosaïque')
+                    return
+                print "sumprct = " + str(sumprct)
+                querymosaik.first()
+                id_mosaik = querymosaik.value(5)
+                print "id_mosaik="+str(id_mosaik)
+            else :
+                querybiggestid = QtSql.QSqlQuery(self.db)
+                qbiggestid = u"""SELECT id_mosaik FROM bd_habnat.t_ce_habnat_surf ORDER BY id_mosaik DESC LIMIT 1"""
+                ok = querybiggestid.exec_(qbiggestid)
+                if not ok:
+                    QtGui.QMessageBox.warning(self, 'Alerte', u'Requête PlusGrandIdMosaik ratée')
+                querybiggestid.next()
+                print "debut de la mosaique"
+                if self.chx_peupleraie.isChecked == True :
+                    id_mosaik = 0
+                else :
+                    id_mosaik = int(querybiggestid.value(0))+1
+                print "id_mosaik="+str(id_mosaik)
+
+
+
         #lancement de la requête SQL qui introduit les données géographiques et du formulaire dans la base de données.
         querysauvhab = QtSql.QSqlQuery(self.db)
-        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, patrimoine, surf_tot, the_geom) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom})""".format (\
+        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, patrimoine, surf_tot, the_geom, peupleraie, id_mosaik) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom}, {zr_peupleraie}, {zr_idmosaik})""".format (\
         zr_codesite = self.cbx_codesite.itemData(self.cbx_codesite.currentIndex()),\
         zr_auteur = self.cbx_auteur.itemData(self.cbx_auteur.currentIndex()),\
         zr_datedeb = self.dat_datedeb.date().toPyDate().strftime("%Y-%m-%d"),\
@@ -175,8 +219,9 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         zr_codecorine = self.txt_codecorine.text(),\
         zr_pourcent = self.cbx_pourcent.itemText(self.cbx_pourcent.currentIndex()),\
         zr_patrimoine = str(self.chx_patrimoine.isChecked()).lower(),\
-        zr_thegeom = thegeom)
-        print query
+        zr_thegeom = thegeom,\
+        zr_peupleraie = str(self.chx_peupleraie.isChecked()).lower(),\
+        zr_idmosaik = id_mosaik)
         ok = querysauvhab.exec_(query)
         if not ok:
             QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
