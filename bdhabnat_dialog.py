@@ -47,7 +47,7 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         
         # Connexion à la base de données. DB type, host, user, password...
         self.db = QtSql.QSqlDatabase.addDatabase("QPSQL") # QPSQL = nom du pilote postgreSQL
-        self.db.setHostName("127.0.0.1") 
+        self.db.setHostName("192.168.0.10") 
         self.db.setDatabaseName("sitescsn")
         self.db.setUserName("postgres")
         self.db.setPassword("postgres")
@@ -213,7 +213,7 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         zr_datefin = self.dat_datefin.date().toPyDate().strftime("%Y-%m-%d"),\
         zr_habref = self.cbx_habref.itemData(self.cbx_habref.currentIndex()),\
         zr_habcod = '',\
-        zr_hablat = self.cbx_hablat.itemText(self.cbx_hablat.currentIndex()),\
+        zr_hablat = self.cbx_hablat.itemText(self.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
         zr_habfr = self.cbx_habfr.itemText(self.cbx_habfr.currentIndex()).replace("\'","\'\'"),\
         zr_codeeur27 = self.txt_codeeur27.text(),\
         zr_codecorine = self.txt_codecorine.text(),\
@@ -222,7 +222,6 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         zr_thegeom = thegeom,\
         zr_peupleraie = str(self.chx_peupleraie.isChecked()).lower(),\
         zr_idmosaik = id_mosaik)
-        print query
         ok = querysauvhab.exec_(query)
         if not ok:
             QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
