@@ -129,34 +129,67 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         print 'sauv_saisie'
         #copie des entités sélectionnées dans une couche "memory". Evite les problèmes avec les types de couches "non éditables" (comme les GPX).
         coucheactive=self.iface.activeLayer()
+
+        # On vérifie que les entités sélectionnées dans la couche active sont bien des polygones (et non des lignes ou des points)
         entselect=[QgsGeometry(feature.geometry()) for feature in coucheactive.selectedFeatures()]
         if entselect[0].type() == QGis.Polygon:
             typegeom='Polygon'
-            self.iface.actionCopyFeatures().trigger()
+#            geom = self.transfoPoly(entselect)
+#            print "geom=" + str(geom.exportToWkt())
+            print "polygones"
         else: 
             QtGui.QMessageBox.warning(self, 'Alerte', u'Les entités sélectionnées ne sont pas des polygones')
             self.close
-        if self.iface.activeLayer().crs().authid() == u'EPSG:4326':
-           memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:4326".format(zr_typegeom = typegeom), "memlayer", "memory")
-        if self.iface.activeLayer().crs().authid() == u'EPSG:2154':
-           memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:2154".format(zr_typegeom = typegeom), "memlayer", "memory")
+            return
+
+        # Création de la couche en mémoire "memlayer" et début de la session d'édition
+        if coucheactive.crs().authid() == u'EPSG:4326':
+            memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:4326".format(zr_typegeom = typegeom), "memlayer", "memory")
+        if coucheactive.crs().authid() == u'EPSG:2154':
+            memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:2154".format(zr_typegeom = typegeom), "memlayer", "memory")
+            print "memlayer="+str(memlayer)
         QgsMapLayerRegistry.instance().addMapLayer(memlayer, False)
         root = QgsProject.instance().layerTreeRoot()
         memlayerNode = QgsLayerTreeLayer(memlayer)
         root.insertChildNode(0, memlayerNode)
         self.iface.setActiveLayer(memlayer)
         memlayer.startEditing()
-        self.iface.actionPasteFeatures().trigger()
+
+
+# Pour chaque entité sélectionnée, si elle est multipartie, on ajoute chacune de ses parties individuellement à la couche memlayer. Sinon, on l'ajoute directement à "memlayer". Puis, on clot la session d'édition.
+        for feature in coucheactive.selectedFeatures() :
+            geom = feature.geometry()
+            temp_feature = QgsFeature(feature)
+            # check if feature geometry is multipart
+            if geom.isMultipart():
+                # if feature is multipart creates a new feature using the geometry of each part
+                for part in geom.asGeometryCollection ():
+                    temp_feature.setGeometry(part)
+                    memlayer.dataProvider().addFeatures([temp_feature])
+                    memlayer.updateExtents()
+                # if feature is singlepart, simply adds it to the layer memory
+            else :
+                temp_feature.setGeometry(geom)
+                memlayer.dataProvider().addFeatures([temp_feature])
+                memlayer.updateExtents()
+
+#       self.iface.actionCopyFeatures().trigger()
+#       self.iface.actionPasteFeatures().trigger()
         memlayer.commitChanges()
-        geomlist = [QgsGeometry(feature.geometry()) for feature in memlayer.selectedFeatures()]
-        geom = self.transfoPoly(geomlist)
+        print "memlayercount="+str(memlayer.featureCount())
+
+        #on sélectionne toutes les entités de memlayer pour en faire une liste de géométries, qui sera saisie en base.
+        memlayer.selectAll()
+        geomlis = [QgsGeometry(feature.geometry()) for feature in memlayer.selectedFeatures()]
+        print "geomlis="+str(geomlis)
+        geomlist = QgsGeometry.fromMultiPolygon([poly.asPolygon() for poly in geomlis])
 
 
         #export de la géométrie en WKT et transformation de la projection si les données ne sont pas saisies en Lambert 93
         if memlayer.crs().authid() == u'EPSG:2154':
-            thegeom='st_setsrid(st_geometryfromtext (\'{zr_geom}\'), 2154)'.format(zr_geom=geom.exportToWkt())
+            thegeom='st_setsrid(st_geometryfromtext (\'{zr_geom}\'), 2154)'.format(zr_geom=geomlist.exportToWkt())
         elif memlayer.crs().authid() == u'EPSG:4326':
-            thegeom='st_transform(st_setsrid(st_geometryfromtext (\'{zr_geom}\'),4326), 2154)'.format(zr_geom=geom.exportToWkt())
+            thegeom='st_transform(st_setsrid(st_geometryfromtext (\'{zr_geom}\'),4326), 2154)'.format(zr_geom=geomlist.exportToWkt())
         else :
             print u'La projection de la couche active n\'est pas supportée'
 
@@ -230,6 +263,3 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
         self.close
 
-
-    def transfoPoly(self, polygeoms):
-        return QgsGeometry.fromMultiPolygon([poly.asPolygon() for poly in polygeoms])
