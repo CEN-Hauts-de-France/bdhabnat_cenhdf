@@ -602,7 +602,16 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="cbx_corine_mep"/>
+     <widget class="QComboBox" name="cbx_corine_mep">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Non saisi</string>
+       </property>
+      </item>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="lbl_codeeur27_mep">
@@ -615,7 +624,16 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="cbx_eur27_mep"/>
+     <widget class="QComboBox" name="cbx_eur27_mep">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Non saisi</string>
+       </property>
+      </item>
+     </widget>
     </item>
    </layout>
   </widget>

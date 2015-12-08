@@ -250,8 +250,28 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
 
 
         #lancement de la requête SQL qui introduit les données géographiques et du formulaire dans la base de données.
+
+        self.habref = self.cbx_habref.itemData(self.cbx_habref.currentIndex())
+        if self.habref == 'cbnbl':
+            print 'liste cbnbl'
+            queryrarmen = QtSql.QSqlQuery(self.db)
+            qrarmen = u"""SELECT rarete, menace, interetpatr FROM bd_habnat.t_liste_ref_cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
+            zr_hablat= self.cbx_hablat.itemText(self.cbx_hablat.currentIndex()).replace("\'","\'\'"))
+            okrarmen=queryrarmen.exec_(qrarmen)
+            if not okrarmen :
+                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête RarMen ratée')
+            queryrarmen.next()
+            self.rarete = queryrarmen.value(0)
+            self.menace = queryrarmen.value(1)
+            self.patrimonialite = queryrarmen.value(2)
+            print str(self.rarete)+" "+str(self.menace)+" "+str(self.patrimonialite)
+        else :
+            self.rarete = 'ND'
+            self.menace = 'ND'
+            self.patrimonialite = str(self.chx_patrimoine.isChecked()).lower()
+
         querysauvhab = QtSql.QSqlQuery(self.db)
-        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, patrimoine, surf_tot, the_geom, peupleraie, id_mosaik) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom}, {zr_peupleraie}, {zr_idmosaik})""".format (\
+        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, peupleraie, id_mosaik) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom}, {zr_peupleraie}, {zr_idmosaik})""".format (\
         zr_codesite = self.cbx_codesite.itemData(self.cbx_codesite.currentIndex()),\
         zr_auteur = self.cbx_auteur.itemData(self.cbx_auteur.currentIndex()),\
         zr_datedeb = self.dat_datedeb.date().toPyDate().strftime("%Y-%m-%d"),\
@@ -260,10 +280,12 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         zr_habcod = '',\
         zr_hablat = self.cbx_hablat.itemText(self.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
         zr_habfr = self.cbx_habfr.itemText(self.cbx_habfr.currentIndex()).replace("\'","\'\'"),\
-        zr_codeeur27 = self.cbx_eur27_mep.itemData(self.cbx_eur27_mep.currentIndex()),\
-        zr_codecorine = self.cbx_corine_mep.itemData(self.cbx_corine_mep.currentIndex()),\
+        zr_codeeur27 = self.cbx_eur27_mep.itemText(self.cbx_eur27_mep.currentIndex()),\
+        zr_codecorine = self.cbx_corine_mep.itemText(self.cbx_corine_mep.currentIndex()),\
         zr_pourcent = self.cbx_pourcent.itemText(self.cbx_pourcent.currentIndex()),\
-        zr_patrimoine = str(self.chx_patrimoine.isChecked()).lower(),\
+        zr_rarete = self.rarete,\
+        zr_menace = self.menace,\
+        zr_patrimoine = self.patrimonialite,\
         zr_thegeom = thegeom,\
         zr_peupleraie = str(self.chx_peupleraie.isChecked()).lower(),\
         zr_idmosaik = id_mosaik)
