@@ -47,7 +47,7 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         
         # Connexion à la base de données. DB type, host, user, password...
         self.db = QtSql.QSqlDatabase.addDatabase("QPSQL") # QPSQL = nom du pilote postgreSQL
-        self.db.setHostName("192.168.0.10") 
+        self.db.setHostName("127.0.0.1") 
         self.db.setDatabaseName("sitescsn")
         self.db.setUserName("postgres")
         self.db.setPassword("postgres")
@@ -73,9 +73,22 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
             while query_ref.next():
                 self.cbx_habref.addItem(query_ref.value(1), query_ref.value(2) )
 
+        # Remplir les combobox "cbx_corine_mep" et "cbx_eur27_mep" avec les champs hab_cod des tables "t_liste_ref_cirone" et "t_loiste_ref_eur27"
+        query_corine = QtSql.QSqlQuery(self.db)
+        if query_corine.exec_('select hab_cod from bd_habnat.t_liste_ref_corine order by hab_cod'):
+            while query_corine.next():
+                self.cbx_corine_mep.addItem(query_corine.value(0), query_corine.value(0) )
+        print query_corine
+
+        query_eur27 = QtSql.QSqlQuery(self.db)
+        if query_eur27.exec_('select hab_cod from bd_habnat.t_liste_ref_eur27 order by hab_cod'):
+            while query_eur27.next():
+                self.cbx_eur27_mep.addItem(query_eur27.value(0), query_eur27.value(0) )
+        print query_eur27
+
         # Connexions signaux - slots
         self.cbx_habref.currentIndexChanged.connect(self.listesref)
-        self.cbx_habfr.currentIndexChanged.connect(self.coreur27)
+#        self.cbx_habfr.currentIndexChanged.connect(self.coreur27)
         self.buttonBox.accepted.connect(self.sauvSaisie)
         self.buttonBox.rejected.connect(self.close)
 
@@ -172,8 +185,7 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
                 temp_feature.setGeometry(geom)
                 memlayer.dataProvider().addFeatures([temp_feature])
                 memlayer.updateExtents()
-
-#       self.iface.actionCopyFeatures().trigger()
+ #       self.iface.actionCopyFeatures().trigger()
 #       self.iface.actionPasteFeatures().trigger()
         memlayer.commitChanges()
         print "memlayercount="+str(memlayer.featureCount())
@@ -248,8 +260,8 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         zr_habcod = '',\
         zr_hablat = self.cbx_hablat.itemText(self.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
         zr_habfr = self.cbx_habfr.itemText(self.cbx_habfr.currentIndex()).replace("\'","\'\'"),\
-        zr_codeeur27 = self.txt_codeeur27.text(),\
-        zr_codecorine = self.txt_codecorine.text(),\
+        zr_codeeur27 = self.cbx_eur27_mep.itemData(self.cbx_eur27_mep.currentIndex()),\
+        zr_codecorine = self.cbx_corine_mep.itemData(self.cbx_corine_mep.currentIndex()),\
         zr_pourcent = self.cbx_pourcent.itemText(self.cbx_pourcent.currentIndex()),\
         zr_patrimoine = str(self.chx_patrimoine.isChecked()).lower(),\
         zr_thegeom = thegeom,\
@@ -262,3 +274,6 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
         self.close
 
+
+                   #self.txt_codeeur27.text(),\
+                #self.txt_codecorine.text(),\

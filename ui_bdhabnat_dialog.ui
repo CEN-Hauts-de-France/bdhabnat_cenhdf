@@ -420,7 +420,7 @@
    <property name="geometry">
     <rect>
      <x>520</x>
-     <y>350</y>
+     <y>280</y>
      <width>161</width>
      <height>51</height>
     </rect>
@@ -439,7 +439,7 @@
    <property name="geometry">
     <rect>
      <x>490</x>
-     <y>350</y>
+     <y>280</y>
      <width>20</width>
      <height>201</height>
     </rect>
@@ -482,7 +482,7 @@
     <rect>
      <x>180</x>
      <y>500</y>
-     <width>301</width>
+     <width>357</width>
      <height>62</height>
     </rect>
    </property>
@@ -585,7 +585,7 @@
    <property name="geometry">
     <rect>
      <x>520</x>
-     <y>410</y>
+     <y>340</y>
      <width>181</width>
      <height>121</height>
     </rect>
@@ -602,7 +602,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="txt_corine_mep"/>
+     <widget class="QComboBox" name="cbx_corine_mep"/>
     </item>
     <item>
      <widget class="QLabel" name="lbl_codeeur27_mep">
@@ -615,7 +615,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="txt_eur27_mep"/>
+     <widget class="QComboBox" name="cbx_eur27_mep"/>
     </item>
    </layout>
   </widget>
@@ -635,8 +635,6 @@
   <tabstop>chx_peupleraie</tabstop>
   <tabstop>cbx_evol</tabstop>
   <tabstop>txt_facies</tabstop>
-  <tabstop>txt_corine_mep</tabstop>
-  <tabstop>txt_eur27_mep</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
