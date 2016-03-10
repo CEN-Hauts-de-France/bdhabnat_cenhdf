@@ -48,7 +48,7 @@ PY_FILES = \
 	bdhabnat_dialog.py \
 	__init__.py
 
-UI_FILES = ui_bdhabnat_dialog.ui
+UI_FILES = ui_bdhabnat_dialog.py
 
 EXTRAS = icon.png metadata.txt
 
@@ -71,10 +71,13 @@ QGISDIR=.qgis2
 
 default: compile
 
-compile: $(COMPILED_RESOURCE_FILES)
+compile: $(UI_FILES) $(RESOURCE_FILES) $(COMPILED_RESOURCE_FILES)
 
 %_rc.py : %.qrc $(RESOURCES_SRC)
 	pyrcc4 -o $*_rc.py  $<
+
+%.py : %.ui
+	pyuic4 -o $@ $<
 
 %.qm : %.ts
 	$(LRELEASE) $<

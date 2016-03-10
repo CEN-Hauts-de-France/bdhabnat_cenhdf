@@ -12,27 +12,18 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>10</width>
-    <height>10</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="baseSize">
    <size>
-    <width>50</width>
-    <height>100</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Formulaire de saisie de l'habitat</string>
-  </property>
-  <property name="toolTip">
-   <string/>
-  </property>
-  <property name="whatsThis">
-   <string/>
-  </property>
-  <property name="modal">
-   <bool>true</bool>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -129,7 +120,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>

@@ -191,7 +191,7 @@ class bdhabnat:
             # Run the dialog event loop
             result = self.dlg.exec_()
             # See if OK was pressed
-            if result:
+            if result == 1 :
                 # Do something useful here - delete the line containing pass and
                 # substitute with your code.
                 pass
@@ -213,12 +213,6 @@ class bdhabnat:
             ret = messlayer.exec_()
             self.noEntity = 'True'
             return
-        # Attention : au contraire de ce qu'on a fait dans operationdialog.py, ne pas utiliser "self" en premier paramètre de
-        # QMessageBox (il faut le widget parent), car ici self désigne une classe qui n'est pas un QWidget. 
-        # Avec self.dlg_ope, la fenêtre "operation" devient parent => plus d'erreur "parameter 1 : unexpected 'instance'".
-        # return permet de quitter la fonction sans exécuter la suite. D'où, plus de message d'erreur parce que 
-        # la méthode "geometrytype" d'un "active layer" vide n'existe pas.
-        
         else:
             # S'il y a une couche active, mais que c'est un raster
             if layer.type() == QgsMapLayer.RasterLayer:
