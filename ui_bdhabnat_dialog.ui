@@ -275,7 +275,10 @@
      </widget>
     </item>
     <item row="13" column="0">
-     <widget class="QLabel" name="lbl_facies">
+     <widget class="QLabel" name="lbl_faciesa">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Faciès à ...</string>
       </property>
@@ -350,7 +353,7 @@
      </widget>
     </item>
     <item row="12" column="1">
-     <widget class="QComboBox" name="cbx_evol">
+     <widget class="QComboBox" name="cbx_habetat">
       <item>
        <property name="text">
         <string>Faciès habitats :</string>
@@ -539,7 +542,11 @@
      </widget>
     </item>
     <item row="13" column="1">
-     <widget class="QLineEdit" name="txt_facies"/>
+     <widget class="QLineEdit" name="txt_faciesa">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
     </item>
     <item row="2" column="1">
      <widget class="QDateEdit" name="dat_datedeb">

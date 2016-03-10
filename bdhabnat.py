@@ -186,6 +186,9 @@ class bdhabnat:
             return
         else:
             """Run method that performs all the real work"""
+            # Initialisation
+            self.dlg.ui.txt_faciesa.clear()
+            self.dlg.ui.cbx_habetat.setCurrentIndex(0)
             # show the dialog
             self.dlg.show()
             # Run the dialog event loop

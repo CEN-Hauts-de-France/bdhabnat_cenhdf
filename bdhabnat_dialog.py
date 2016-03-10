@@ -86,6 +86,7 @@ class bdhabnatDialog(QtGui.QDialog):
         self.ui.buttonBox.accepted.connect(self.sauvSaisie)
         self.ui.buttonBox.rejected.connect(self.close)
         self.ui.chx_peupleraie.stateChanged.connect(self.peupleraie)
+        self.ui.cbx_habetat.currentIndexChanged.connect(self.facies)
 
 
 
@@ -134,11 +135,26 @@ class bdhabnatDialog(QtGui.QDialog):
 
 
     def peupleraie(self):
+        # Si l'habitat saisi est une peupleraie, il ne peut pas faire partie d'une mosaïque. => il prend 100 % de la surface.
+        # cbx_pourcent est désactivé est sa valeur fixée à 100.
         if self.ui.chx_peupleraie.isChecked() == True:
             self.ui.cbx_pourcent.setEnabled(0)
             self.ui.cbx_pourcent.setCurrentIndex(self.ui.cbx_pourcent.findText('100', QtCore.Qt.MatchStartsWith))
         else :
             self.ui.cbx_pourcent.setEnabled(1)
+
+
+
+    def facies(self):
+        # si l'utiliusateur saisit un "faciès à...", alors la zone de texte "faciès à est éctivée". Sinon, elle est désactivée.
+        habetat = self.ui.cbx_habetat.itemText(self.ui.cbx_habetat.currentIndex())
+        if habetat == u"""-  à : (compléter dans la zone de texte ci-dessous)""" :
+            self.ui.txt_faciesa.setEnabled(1)
+            self.ui.lbl_faciesa.setEnabled(1)
+        else :
+            self.ui.txt_faciesa.clear()
+            self.ui.txt_faciesa.setEnabled(0)
+            self.ui.lbl_faciesa.setEnabled(0)
 
 
 
@@ -274,7 +290,7 @@ class bdhabnatDialog(QtGui.QDialog):
         self.patrimonialite = str(self.ui.chx_patrimoine.isChecked()).lower()
 
         querysauvhab = QtSql.QSqlQuery(self.db)
-        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, peupleraie, id_mosaik) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom}, {zr_peupleraie}, {zr_idmosaik})""".format (\
+        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, peupleraie, id_mosaik, habetat, faciesa) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom}, {zr_peupleraie}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}')""".format (\
         zr_codesite = self.ui.cbx_codesite.itemData(self.ui.cbx_codesite.currentIndex()),\
         zr_auteur = self.ui.cbx_auteur.itemData(self.ui.cbx_auteur.currentIndex()),\
         zr_datedeb = self.ui.dat_datedeb.date().toPyDate().strftime("%Y-%m-%d"),\
@@ -291,11 +307,14 @@ class bdhabnatDialog(QtGui.QDialog):
         zr_patrimoine = self.patrimonialite,\
         zr_thegeom = thegeom,\
         zr_peupleraie = str(self.ui.chx_peupleraie.isChecked()).lower(),\
-        zr_idmosaik = id_mosaik)
+        zr_idmosaik = id_mosaik,\
+        zr_habetat = self.ui.cbx_habetat.itemText(self.ui.cbx_habetat.currentIndex()),\
+        zr_faciesa = self.ui.txt_faciesa.text().replace("\'","\'\'"))
         ok = querysauvhab.exec_(query)
         if not ok:
             QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
             self.erreurSaisieBase = '1'
+        print unicode(query)
         self.iface.setActiveLayer(coucheactive)
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
 
