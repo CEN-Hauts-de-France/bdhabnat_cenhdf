@@ -263,12 +263,12 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
             queryrarmen.next()
             self.rarete = queryrarmen.value(0)
             self.menace = queryrarmen.value(1)
-            self.patrimonialite = queryrarmen.value(2)
-            print str(self.rarete)+" "+str(self.menace)+" "+str(self.patrimonialite)
+#            self.patrimonialite = queryrarmen.value(2)
+#            print str(self.rarete)+" "+str(self.menace)+" "+str(self.patrimonialite)
         else :
             self.rarete = 'ND'
             self.menace = 'ND'
-            self.patrimonialite = str(self.chx_patrimoine.isChecked()).lower()
+        self.patrimonialite = str(self.chx_patrimoine.isChecked()).lower()
 
         querysauvhab = QtSql.QSqlQuery(self.db)
         query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, peupleraie, id_mosaik) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom}, {zr_peupleraie}, {zr_idmosaik})""".format (\
