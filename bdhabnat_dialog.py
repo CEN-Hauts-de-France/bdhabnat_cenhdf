@@ -85,6 +85,7 @@ class bdhabnatDialog(QtGui.QDialog):
         self.ui.cbx_habfr.currentIndexChanged.connect(self.coreur27)
         self.ui.buttonBox.accepted.connect(self.sauvSaisie)
         self.ui.buttonBox.rejected.connect(self.close)
+        self.ui.chx_peupleraie.stateChanged.connect(self.peupleraie)
 
 
 
@@ -129,6 +130,15 @@ class bdhabnatDialog(QtGui.QDialog):
             self.ui.txt_codeeur27.setText(unicode(self.codecoreu27))
         if self.habref == 'corine':
             self.ui.txt_codecorine.setText(unicode(self.codecoreu27))
+
+
+
+    def peupleraie(self):
+        if self.ui.chx_peupleraie.isChecked() == True:
+            self.ui.cbx_pourcent.setEnabled(0)
+            self.ui.cbx_pourcent.setCurrentIndex(self.ui.cbx_pourcent.findText('100', QtCore.Qt.MatchStartsWith))
+        else :
+            self.ui.cbx_pourcent.setEnabled(1)
 
 
 
