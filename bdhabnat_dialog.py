@@ -88,7 +88,7 @@ class bdhabnatDialog(QtGui.QDialog, FORM_CLASS):
 
         # Connexions signaux - slots
         self.cbx_habref.currentIndexChanged.connect(self.listesref)
-#        self.cbx_habfr.currentIndexChanged.connect(self.coreur27)
+        self.cbx_habfr.currentIndexChanged.connect(self.coreur27)
         self.buttonBox.accepted.connect(self.sauvSaisie)
         self.buttonBox.rejected.connect(self.close)
 
