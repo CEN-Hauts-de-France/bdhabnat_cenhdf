@@ -246,6 +246,13 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="date">
+       <date>
+        <year>2015</year>
+        <month>1</month>
+        <day>1</day>
+       </date>
+      </property>
      </widget>
     </item>
     <item row="4" column="0">
@@ -555,6 +562,13 @@
         <width>100</width>
         <height>16777215</height>
        </size>
+      </property>
+      <property name="date">
+       <date>
+        <year>2015</year>
+        <month>1</month>
+        <day>1</day>
+       </date>
       </property>
      </widget>
     </item>

@@ -41,7 +41,7 @@ class bdhabnatDialog(QtGui.QDialog):
         
         # Connexion à la base de données. DB type, host, user, password...
         self.db = QtSql.QSqlDatabase.addDatabase("QPSQL") # QPSQL = nom du pilote postgreSQL
-        self.db.setHostName("127.0.0.1") 
+        self.db.setHostName("192.168.0.10") 
         self.db.setDatabaseName("sitescsn")
         self.db.setUserName("postgres")
         self.db.setPassword("postgres")
@@ -72,13 +72,13 @@ class bdhabnatDialog(QtGui.QDialog):
         if query_corine.exec_('select hab_cod from bd_habnat.t_liste_ref_corine order by hab_cod'):
             while query_corine.next():
                 self.ui.cbx_corine_mep.addItem(query_corine.value(0), query_corine.value(0) )
-        print query_corine
+
 
         query_eur27 = QtSql.QSqlQuery(self.db)
         if query_eur27.exec_('select hab_cod from bd_habnat.t_liste_ref_eur27 order by hab_cod'):
             while query_eur27.next():
                 self.ui.cbx_eur27_mep.addItem(query_eur27.value(0), query_eur27.value(0) )
-        print query_eur27
+
 
         # Connexions signaux - slots
         self.ui.cbx_habref.currentIndexChanged.connect(self.listesref)
@@ -103,6 +103,7 @@ class bdhabnatDialog(QtGui.QDialog):
             query_cbnbl = QtSql.QSqlQuery(self.db)
             qcbnbl = u'select hab_cod, hab_lat from bd_habnat.t_liste_ref_cbnbl order by hab_lat'
             ok = query_cbnbl.exec_(qcbnbl)
+            print unicode(qcbnbl)
             while query_cbnbl.next():
                 self.ui.cbx_hablat.addItem(query_cbnbl.value(1), query_cbnbl.value(0))
             if not ok:
@@ -110,10 +111,10 @@ class bdhabnatDialog(QtGui.QDialog):
                 print unicode(qcbnbl)
         else :
         # Si un autre référentiel est sélectionné, alors remplir la combobox "cbx_habfr" avec les valeurs de la table correspondant au référentiel.
-            print str(self.habref)
             query_autrref = QtSql.QSqlQuery(self.db)
             qautrref = u"""select hab_cod, hab_fr from bd_habnat.t_liste_ref_{zr_table} order by hab_fr""".format(zr_table = str(self.habref))
             ok = query_autrref.exec_(qautrref)
+            print unicode(qautrref)
             while query_autrref.next():
                 self.ui.cbx_habfr.addItem(query_autrref.value(1), query_autrref.value(0))
             if not ok:
@@ -160,7 +161,6 @@ class bdhabnatDialog(QtGui.QDialog):
 
     def sauvSaisie(self):
         self.erreurSaisieBase = '0'
-        print 'sauv_saisie'
         #copie des entités sélectionnées dans une couche "memory". Evite les problèmes avec les types de couches "non éditables" (comme les GPX).
         coucheactive=self.iface.activeLayer()
 
@@ -170,7 +170,6 @@ class bdhabnatDialog(QtGui.QDialog):
             typegeom='Polygon'
 #            geom = self.transfoPoly(entselect)
 #            print "geom=" + str(geom.exportToWkt())
-            print "polygones"
         else: 
             QtGui.QMessageBox.warning(self, 'Alerte', u'Les entités sélectionnées ne sont pas des polygones')
             self.close
@@ -181,7 +180,6 @@ class bdhabnatDialog(QtGui.QDialog):
             memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:4326".format(zr_typegeom = typegeom), "memlayer", "memory")
         if coucheactive.crs().authid() == u'EPSG:2154':
             memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:2154".format(zr_typegeom = typegeom), "memlayer", "memory")
-            print "memlayer="+str(memlayer)
         QgsMapLayerRegistry.instance().addMapLayer(memlayer, False)
         root = QgsProject.instance().layerTreeRoot()
         memlayerNode = QgsLayerTreeLayer(memlayer)
@@ -212,7 +210,6 @@ class bdhabnatDialog(QtGui.QDialog):
         #on sélectionne toutes les entités de memlayer pour en faire une liste de géométries, qui sera saisie en base.
         memlayer.selectAll()
         geomlis = [QgsGeometry(feature.geometry()) for feature in memlayer.selectedFeatures()]
-        print "geomlis="+str(geomlis)
         geomlist = QgsGeometry.fromMultiPolygon([poly.asPolygon() for poly in geomlis])
 
 
@@ -235,7 +232,6 @@ class bdhabnatDialog(QtGui.QDialog):
             qmosaik = u"""SELECT id_hab_ce, date_fin, pourcent,the_geom, peupleraie, id_mosaik FROM bd_habnat.t_ce_habnat_surf WHERE the_geom = {zr_thegeom} AND date_fin = '{zr_datefin}' AND peupleraie = 'f' """.format (\
             zr_thegeom = thegeom,\
             zr_datefin = self.ui.dat_datefin.date().toPyDate().strftime("%Y-%m-%d"))
-            print qmosaik
             ok = querymosaik.exec_(qmosaik)
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête Mosaik ratée')
@@ -248,10 +244,8 @@ class bdhabnatDialog(QtGui.QDialog):
                 if sumprct > 100 :
                     QtGui.QMessageBox.warning(self, 'Alerte', u'La somme des pourcentages d'u'habitats dépasse 100 % dans la mosaïque')
                     return
-                print "sumprct = " + str(sumprct)
                 querymosaik.first()
                 id_mosaik = querymosaik.value(5)
-                print "id_mosaik="+str(id_mosaik)
             else :
                 querybiggestid = QtSql.QSqlQuery(self.db)
                 qbiggestid = u"""SELECT id_mosaik FROM bd_habnat.t_ce_habnat_surf ORDER BY id_mosaik DESC LIMIT 1"""
@@ -264,7 +258,7 @@ class bdhabnatDialog(QtGui.QDialog):
                     id_mosaik = 0
                 else :
                     id_mosaik = int(querybiggestid.value(0))+1
-                print "id_mosaik="+str(id_mosaik)
+
 
 
 
@@ -272,7 +266,6 @@ class bdhabnatDialog(QtGui.QDialog):
 
         self.habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())
         if self.habref == 'cbnbl':
-            print 'liste cbnbl'
             queryrarmen = QtSql.QSqlQuery(self.db)
             qrarmen = u"""SELECT rarete, menace, interetpatr FROM bd_habnat.t_liste_ref_cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
             zr_hablat= self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"))
@@ -314,7 +307,6 @@ class bdhabnatDialog(QtGui.QDialog):
         if not ok:
             QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
             self.erreurSaisieBase = '1'
-        print unicode(query)
         self.iface.setActiveLayer(coucheactive)
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
 
@@ -322,7 +314,6 @@ class bdhabnatDialog(QtGui.QDialog):
             QtGui.QMessageBox.information(self, 'Information', u'Données correctement saisies dans la base')
         else : 
             QtGui.QMessageBox.warning(self, 'Alerte', u'Il y a eu une erreur lors de la saisie. Données non saisies en base.')
-        print "bonjour"
         self.close()
 
 
