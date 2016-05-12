@@ -41,7 +41,7 @@ class bdhabnatDialog(QtGui.QDialog):
         
         # Connexion à la base de données. DB type, host, user, password...
         self.db = QtSql.QSqlDatabase.addDatabase("QPSQL") # QPSQL = nom du pilote postgreSQL
-        self.db.setHostName("192.168.0.10") 
+        self.db.setHostName("127.0.0.1") 
         self.db.setDatabaseName("sitescsn")
         self.db.setUserName("postgres")
         self.db.setPassword("postgres")
@@ -85,7 +85,7 @@ class bdhabnatDialog(QtGui.QDialog):
         self.ui.cbx_habfr.currentIndexChanged.connect(self.coreur27)
         self.ui.buttonBox.accepted.connect(self.sauvSaisie)
         self.ui.buttonBox.rejected.connect(self.close)
-        self.ui.chx_peupleraie.stateChanged.connect(self.peupleraie)
+        self.ui.chx_plantation.stateChanged.connect(self.plantation)
         self.ui.cbx_habetat.currentIndexChanged.connect(self.facies)
 
 
@@ -135,10 +135,10 @@ class bdhabnatDialog(QtGui.QDialog):
 
 
 
-    def peupleraie(self):
-        # Si l'habitat saisi est une peupleraie, il ne peut pas faire partie d'une mosaïque. => il prend 100 % de la surface.
+    def plantation(self):
+        # Si l'habitat saisi est une plantation, il ne peut pas faire partie d'une mosaïque. => il prend 100 % de la surface.
         # cbx_pourcent est désactivé est sa valeur fixée à 100.
-        if self.ui.chx_peupleraie.isChecked() == True:
+        if self.ui.chx_plantation.isChecked() == True:
             self.ui.cbx_pourcent.setEnabled(0)
             self.ui.cbx_pourcent.setCurrentIndex(self.ui.cbx_pourcent.findText('100', QtCore.Qt.MatchStartsWith))
         else :
@@ -147,7 +147,7 @@ class bdhabnatDialog(QtGui.QDialog):
 
 
     def facies(self):
-        # si l'utiliusateur saisit un "faciès à...", alors la zone de texte "faciès à est éctivée". Sinon, elle est désactivée.
+        # si l'utiliusateur saisit un "faciès à...", alors la zone de texte "faciès à est activée". Sinon, elle est désactivée.
         habetat = self.ui.cbx_habetat.itemText(self.ui.cbx_habetat.currentIndex())
         if habetat == u"""-  à : (compléter dans la zone de texte ci-dessous)""" :
             self.ui.txt_faciesa.setEnabled(1)
@@ -160,6 +160,8 @@ class bdhabnatDialog(QtGui.QDialog):
 
 
     def sauvSaisie(self):
+        if self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())=='0':
+            return
         self.erreurSaisieBase = '0'
         #copie des entités sélectionnées dans une couche "memory". Evite les problèmes avec les types de couches "non éditables" (comme les GPX).
         coucheactive=self.iface.activeLayer()
@@ -229,9 +231,9 @@ class bdhabnatDialog(QtGui.QDialog):
             id_mosaik = 0
         else :
             querymosaik = QtSql.QSqlQuery(self.db)
-            qmosaik = u"""SELECT id_hab_ce, date_fin, pourcent,the_geom, peupleraie, id_mosaik FROM bd_habnat.t_ce_habnat_surf WHERE the_geom = {zr_thegeom} AND date_fin = '{zr_datefin}' AND peupleraie = 'f' """.format (\
+            qmosaik = u"""SELECT id_hab_ce, annee, pourcent,the_geom, plantation, id_mosaik FROM bd_habnat.t_ce_habnat_surf WHERE the_geom = {zr_thegeom} AND annee = '{zr_annee}' AND plantation = 'f' """.format (\
             zr_thegeom = thegeom,\
-            zr_datefin = self.ui.dat_datefin.date().toPyDate().strftime("%Y-%m-%d"))
+            zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()))
             ok = querymosaik.exec_(qmosaik)
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête Mosaik ratée')
@@ -242,7 +244,7 @@ class bdhabnatDialog(QtGui.QDialog):
                     sumprct += int(querymosaik.value(2))
                 sumprct += pourcent
                 if sumprct > 100 :
-                    QtGui.QMessageBox.warning(self, 'Alerte', u'La somme des pourcentages d'u'habitats dépasse 100 % dans la mosaïque')
+                    QtGui.QMessageBox.warning(self, 'Alerte', u'La somme des pourcentages des habitats dépasse 100 % dans la mosaïque')
                     return
                 querymosaik.first()
                 id_mosaik = querymosaik.value(5)
@@ -254,7 +256,7 @@ class bdhabnatDialog(QtGui.QDialog):
                     QtGui.QMessageBox.warning(self, 'Alerte', u'Requête PlusGrandIdMosaik ratée')
                 querybiggestid.next()
                 print "debut de la mosaique"
-                if self.ui.chx_peupleraie.isChecked == True :
+                if self.ui.chx_plantation.isChecked == True :
                     id_mosaik = 0
                 else :
                     id_mosaik = int(querybiggestid.value(0))+1
@@ -275,19 +277,17 @@ class bdhabnatDialog(QtGui.QDialog):
             queryrarmen.next()
             self.rarete = queryrarmen.value(0)
             self.menace = queryrarmen.value(1)
-#            self.patrimonialite = queryrarmen.value(2)
-#            print str(self.rarete)+" "+str(self.menace)+" "+str(self.patrimonialite)
+#            print str(self.rarete)+" "+str(self.menace)+"
         else :
             self.rarete = 'ND'
             self.menace = 'ND'
-        self.patrimonialite = str(self.ui.chx_patrimoine.isChecked()).lower()
+
 
         querysauvhab = QtSql.QSqlQuery(self.db)
-        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, date_deb, date_fin, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, peupleraie, id_mosaik, habetat, faciesa) values ('{zr_codesite}', '{zr_auteur}', '{zr_datedeb}', '{zr_datefin}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_patrimoine}', st_area({zr_thegeom}), {zr_thegeom}, {zr_peupleraie}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}')""".format (\
+        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, annee, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, rarete, menace, surf_tot, the_geom, plantation, id_mosaik, habetat, faciesa) values ('{zr_codesite}', '{zr_auteur}', '{zr_annee}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', st_area({zr_thegeom}), {zr_thegeom}, {zr_plantation}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}')""".format (\
         zr_codesite = self.ui.cbx_codesite.itemData(self.ui.cbx_codesite.currentIndex()),\
         zr_auteur = self.ui.cbx_auteur.itemData(self.ui.cbx_auteur.currentIndex()),\
-        zr_datedeb = self.ui.dat_datedeb.date().toPyDate().strftime("%Y-%m-%d"),\
-        zr_datefin = self.ui.dat_datefin.date().toPyDate().strftime("%Y-%m-%d"),\
+        zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()),\
         zr_habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex()),\
         zr_habcod = '',\
         zr_hablat = self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
@@ -297,9 +297,8 @@ class bdhabnatDialog(QtGui.QDialog):
         zr_pourcent = self.ui.cbx_pourcent.itemText(self.ui.cbx_pourcent.currentIndex()),\
         zr_rarete = self.rarete,\
         zr_menace = self.menace,\
-        zr_patrimoine = self.patrimonialite,\
         zr_thegeom = thegeom,\
-        zr_peupleraie = str(self.ui.chx_peupleraie.isChecked()).lower(),\
+        zr_plantation = str(self.ui.chx_plantation.isChecked()).lower(),\
         zr_idmosaik = id_mosaik,\
         zr_habetat = self.ui.cbx_habetat.itemText(self.ui.cbx_habetat.currentIndex()),\
         zr_faciesa = self.ui.txt_faciesa.text().replace("\'","\'\'"))

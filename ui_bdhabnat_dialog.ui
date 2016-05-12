@@ -28,9 +28,9 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>380</x>
+     <x>550</x>
      <y>450</y>
-     <width>341</width>
+     <width>191</width>
      <height>32</height>
     </rect>
    </property>
@@ -120,76 +120,81 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
-     <width>517</width>
-     <height>428</height>
+     <y>460</y>
+     <width>481</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Nota : il est préconisé d'utiliser au maximum le référentile de DIGITALE2</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>350</y>
+     <width>66</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>170</y>
+     <width>16</width>
+     <height>145</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>511</width>
+     <height>431</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="11" column="0">
-     <widget class="QLabel" name="lbl_peupleraie">
-      <property name="text">
-       <string>Peupleraie</string>
-      </property>
-      <property name="buddy">
-       <cstring>chx_patrimoine</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="1">
-     <widget class="QCheckBox" name="chx_peupleraie">
+    <item row="3" column="1">
+     <widget class="QComboBox" name="cbx_habref">
       <property name="maximumSize">
        <size>
         <width>300</width>
         <height>16777215</height>
        </size>
       </property>
-      <property name="text">
-       <string>Cochez si peupleraie</string>
+      <property name="toolTip">
+       <string extracomment="Nota : il est préférable de choisir le référentiel de DIGITALE2"/>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="cbx_auteur">
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="contextMenuPolicy">
-       <enum>Qt::DefaultContextMenu</enum>
+      <property name="editable">
+       <bool>false</bool>
       </property>
       <property name="currentText" stdset="0">
        <string/>
       </property>
-      <property name="currentIndex">
-       <number>-1</number>
+      <property name="maxVisibleItems">
+       <number>5</number>
+      </property>
+      <property name="minimumContentsLength">
+       <number>1</number>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="lbl_datdeb">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Date de début :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="lbl_codeeur27">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code EUR27 :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
+    <item row="6" column="1">
      <widget class="QLabel" name="txt_codeeur27">
       <property name="maximumSize">
        <size>
@@ -208,67 +213,37 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="lbl_codesite">
+    <item row="1" column="0">
+     <widget class="QLabel" name="lbl_auteur">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Code du site :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="0">
-     <widget class="QLabel" name="lbl_patrimoine">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Patrimonialité :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Auteur :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
-       <cstring>chx_patrimoine</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="1">
-     <widget class="QCheckBox" name="chx_patrimoine">
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Cochez si habitat retenu</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QDateEdit" name="dat_datefin">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="date">
-       <date>
-        <year>2015</year>
-        <month>1</month>
-        <day>1</day>
-       </date>
+       <cstring>cbx_auteur</cstring>
       </property>
      </widget>
     </item>
     <item row="4" column="0">
-     <widget class="QLabel" name="lbl_habref">
+     <widget class="QLabel" name="lbl_hablat">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Référentiel Habitat :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Nom habitat scientifique :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="buddy">
-       <cstring>cbx_habref</cstring>
+       <cstring>cbx_hablat</cstring>
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
-     <widget class="QComboBox" name="cbx_habfr">
+    <item row="4" column="1">
+     <widget class="QComboBox" name="cbx_hablat">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -279,88 +254,71 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="maxVisibleItems">
+       <number>30</number>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+      </property>
+      <property name="minimumContentsLength">
+       <number>150</number>
+      </property>
      </widget>
     </item>
-    <item row="13" column="0">
-     <widget class="QLabel" name="lbl_faciesa">
-      <property name="enabled">
-       <bool>false</bool>
+    <item row="7" column="1">
+     <widget class="QLabel" name="txt_codecorine">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>300</width>
+        <height>25</height>
+       </size>
       </property>
       <property name="text">
-       <string>Faciès à ...</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="lbl_habfr">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Nom 2 habitat (fr) :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string/>
       </property>
      </widget>
     </item>
     <item row="9" column="0">
-     <widget class="QLabel" name="lbl_pourcent">
+     <widget class="QLabel" name="lbl_plantation">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;% dans la mosaïque :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>Plantation</string>
       </property>
      </widget>
     </item>
     <item row="9" column="1">
-     <widget class="QComboBox" name="cbx_pourcent">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
+     <widget class="QCheckBox" name="chx_plantation">
       <property name="maximumSize">
        <size>
-        <width>60</width>
+        <width>300</width>
         <height>16777215</height>
        </size>
       </property>
-      <property name="currentIndex">
-       <number>5</number>
+      <property name="text">
+       <string>Cochez si peupleraie</string>
       </property>
-      <item>
-       <property name="text">
-        <string>25</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>33</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>50</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>66</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>75</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>100</string>
-       </property>
-      </item>
      </widget>
     </item>
-    <item row="12" column="1">
+    <item row="10" column="0">
+     <widget class="QLabel" name="lbl_evol">
+      <property name="text">
+       <string>Evolution de l'habitat</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="1">
      <widget class="QComboBox" name="cbx_habetat">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <item>
        <property name="text">
         <string>Faciès habitats :</string>
@@ -448,35 +406,30 @@
       </item>
      </widget>
     </item>
-    <item row="5" column="1">
-     <widget class="QComboBox" name="cbx_hablat">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+    <item row="11" column="0">
+     <widget class="QLabel" name="lbl_faciesa">
+      <property name="enabled">
+       <bool>false</bool>
       </property>
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="maxVisibleItems">
-       <number>30</number>
-      </property>
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
-      <property name="minimumContentsLength">
-       <number>150</number>
+      <property name="text">
+       <string>Faciès à ...</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="2" rowspan="6">
-     <widget class="Line" name="line_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+    <item row="11" column="1">
+     <widget class="QLineEdit" name="txt_faciesa">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="lbl_habref">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Référentiel Habitat :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="buddy">
+       <cstring>cbx_habref</cstring>
       </property>
      </widget>
     </item>
@@ -499,94 +452,204 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="lbl_auteur">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Auteur :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <item row="5" column="0">
+     <widget class="QLabel" name="lbl_habfr">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
       </property>
-      <property name="buddy">
-       <cstring>cbx_auteur</cstring>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Nom habitat vernaculaire :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QComboBox" name="cbx_habref">
+    <item row="5" column="1">
+     <widget class="QComboBox" name="cbx_habfr">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="maximumSize">
        <size>
         <width>300</width>
         <height>16777215</height>
        </size>
       </property>
-      <property name="editable">
-       <bool>false</bool>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="cbx_auteur">
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::DefaultContextMenu</enum>
       </property>
       <property name="currentText" stdset="0">
        <string/>
       </property>
-      <property name="maxVisibleItems">
-       <number>5</number>
-      </property>
-      <property name="minimumContentsLength">
-       <number>1</number>
+      <property name="currentIndex">
+       <number>-1</number>
       </property>
      </widget>
     </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="lbl_hablat">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
+    <item row="2" column="0">
+     <widget class="QLabel" name="lbl_annee">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Nom 1 habitat (latin) :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="buddy">
-       <cstring>cbx_hablat</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="1">
-     <widget class="QLineEdit" name="txt_faciesa">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QDateEdit" name="dat_datedeb">
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="date">
-       <date>
-        <year>2015</year>
-        <month>1</month>
-        <day>1</day>
-       </date>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="lbl_datefin">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Date de fin :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="0">
-     <widget class="QLabel" name="lbl_evol">
-      <property name="text">
-       <string>Evolution de l'habitat</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saison de prospection :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item row="8" column="0">
+     <widget class="QLabel" name="lbl_pourcent">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;% dans la mosaïque :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="1">
+     <widget class="QComboBox" name="cbx_pourcent">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>60</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>19</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>5</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>10</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>15</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>20</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>25</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>30</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>35</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>40</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>45</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>50</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>55</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>60</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>65</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>70</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>75</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>80</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>85</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>90</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>95</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>100</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="lbl_codeeur27">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code EUR27 :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="lbl_codesite">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code du site :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
      <widget class="QLabel" name="lbl_codecorine">
       <property name="enabled">
        <bool>true</bool>
@@ -596,23 +659,172 @@
       </property>
      </widget>
     </item>
-    <item row="8" column="1">
-     <widget class="QLabel" name="txt_codecorine">
+    <item row="2" column="1">
+     <widget class="QComboBox" name="cbx_annee">
       <property name="maximumSize">
        <size>
-        <width>300</width>
-        <height>25</height>
+        <width>100</width>
+        <height>16777215</height>
        </size>
       </property>
-      <property name="baseSize">
-       <size>
-        <width>300</width>
-        <height>25</height>
-       </size>
+      <property name="currentIndex">
+       <number>16</number>
       </property>
-      <property name="text">
-       <string/>
-      </property>
+      <item>
+       <property name="text">
+        <string>2000</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2001</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2002</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2003</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2004</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2005</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2006</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2007</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2008</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2009</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2010</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2011</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2012</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2013</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2014</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2015</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2016</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2017</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2018</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2019</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2020</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2021</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2022</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2023</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2024</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2025</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2026</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2027</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2028</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2029</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2030</string>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>
