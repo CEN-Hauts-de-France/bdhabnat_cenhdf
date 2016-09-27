@@ -41,7 +41,7 @@ class bdhabnatDialog(QtGui.QDialog):
         
         # Connexion à la base de données. DB type, host, user, password...
         self.db = QtSql.QSqlDatabase.addDatabase("QPSQL") # QPSQL = nom du pilote postgreSQL
-        self.db.setHostName("127.0.0.1") 
+        self.db.setHostName("192.168.0.10") 
         self.db.setDatabaseName("sitescsn")
         self.db.setUserName("postgres")
         self.db.setPassword("postgres")
@@ -67,13 +67,7 @@ class bdhabnatDialog(QtGui.QDialog):
             while query_ref.next():
                 self.ui.cbx_habref.addItem(query_ref.value(1), query_ref.value(2) )
 
-        # Remplir les combobox "cbx_corine_mep" et "cbx_eur27_mep" avec les champs hab_cod des tables "t_liste_ref_cirone" et "t_loiste_ref_eur27"
-        query_corine = QtSql.QSqlQuery(self.db)
-        if query_corine.exec_('select hab_cod from bd_habnat.t_liste_ref_corine order by hab_cod'):
-            while query_corine.next():
-                self.ui.cbx_corine_mep.addItem(query_corine.value(0), query_corine.value(0) )
-
-
+        # Remplir la combobox "cbx_eur27_mep" avec le champs hab_cod de la table "t_liste_ref_eur27"
         query_eur27 = QtSql.QSqlQuery(self.db)
         if query_eur27.exec_('select hab_cod from bd_habnat.t_liste_ref_eur27 order by hab_cod'):
             while query_eur27.next():
@@ -95,7 +89,6 @@ class bdhabnatDialog(QtGui.QDialog):
         self.ui.cbx_hablat.clear()
         self.ui.cbx_habfr.clear()
         self.ui.txt_codeeur27.clear()
-        self.ui.txt_codecorine.clear()
         self.habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())
         if self.habref == 'cbnbl':
         # Si le référentiel "Digitale" du CBNBL est sélectionné, alors remplir la combobox "cbx_hablat"
@@ -124,15 +117,11 @@ class bdhabnatDialog(QtGui.QDialog):
 
 
     def coreur27(self):
-        # Remplissage éventuel des zones de texte "txt_codeeur27" et "txt_codecorine"
+        # Remplissage éventuel de la zone de texte "txt_codeeur27"
         self.ui.txt_codeeur27.clear()
-        self.ui.txt_codecorine.clear()
         self.codecoreu27 = self.ui.cbx_habfr.itemData(self.ui.cbx_habfr.currentIndex())
         if self.habref == 'eur27':
             self.ui.txt_codeeur27.setText(unicode(self.codecoreu27))
-        if self.habref == 'corine':
-            self.ui.txt_codecorine.setText(unicode(self.codecoreu27))
-
 
 
     def plantation(self):
@@ -293,7 +282,7 @@ class bdhabnatDialog(QtGui.QDialog):
         zr_hablat = self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
         zr_habfr = self.ui.cbx_habfr.itemText(self.ui.cbx_habfr.currentIndex()).replace("\'","\'\'"),\
         zr_codeeur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex()),\
-        zr_codecorine = self.ui.cbx_corine_mep.itemText(self.ui.cbx_corine_mep.currentIndex()),\
+        zr_codecorine = str(""),\
         zr_pourcent = self.ui.cbx_pourcent.itemText(self.ui.cbx_pourcent.currentIndex()),\
         zr_rarete = self.rarete,\
         zr_menace = self.menace,\

@@ -99,25 +99,6 @@
       </item>
      </widget>
     </item>
-    <item>
-     <widget class="QLabel" name="lbl_codecorine_mep">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code(s) Corine :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="cbx_corine_mep">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>Non saisi</string>
-       </property>
-      </item>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -130,20 +111,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Nota : il est préconisé d'utiliser au maximum le référentile de DIGITALE2</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>630</x>
-     <y>350</y>
-     <width>66</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
+    <string>Nota : il est préconisé d'utiliser au maximum le référentiel de DIGITALE2</string>
    </property>
   </widget>
   <widget class="Line" name="line_2">
@@ -159,7 +127,7 @@
     <enum>Qt::Vertical</enum>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -265,33 +233,14 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="1">
-     <widget class="QLabel" name="txt_codecorine">
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>25</height>
-       </size>
-      </property>
-      <property name="baseSize">
-       <size>
-        <width>300</width>
-        <height>25</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
+    <item row="8" column="0">
      <widget class="QLabel" name="lbl_plantation">
       <property name="text">
-       <string>Plantation</string>
+       <string>Plantation (à cocher si oui)</string>
       </property>
      </widget>
     </item>
-    <item row="9" column="1">
+    <item row="8" column="1">
      <widget class="QCheckBox" name="chx_plantation">
       <property name="maximumSize">
        <size>
@@ -300,18 +249,18 @@
        </size>
       </property>
       <property name="text">
-       <string>Cochez si peupleraie</string>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="10" column="0">
+    <item row="9" column="0">
      <widget class="QLabel" name="lbl_evol">
       <property name="text">
        <string>Evolution de l'habitat</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="1">
+    <item row="9" column="1">
      <widget class="QComboBox" name="cbx_habetat">
       <property name="maximumSize">
        <size>
@@ -406,7 +355,7 @@
       </item>
      </widget>
     </item>
-    <item row="11" column="0">
+    <item row="10" column="0">
      <widget class="QLabel" name="lbl_faciesa">
       <property name="enabled">
        <bool>false</bool>
@@ -416,7 +365,7 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="1">
+    <item row="10" column="1">
      <widget class="QLineEdit" name="txt_faciesa">
       <property name="enabled">
        <bool>false</bool>
@@ -506,14 +455,14 @@
       </property>
      </widget>
     </item>
-    <item row="8" column="0">
+    <item row="7" column="0">
      <widget class="QLabel" name="lbl_pourcent">
       <property name="text">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;% dans la mosaïque :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
-    <item row="8" column="1">
+    <item row="7" column="1">
      <widget class="QComboBox" name="cbx_pourcent">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -646,16 +595,6 @@
      <widget class="QLabel" name="lbl_codesite">
       <property name="text">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code du site :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="lbl_codecorine">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Code Corine :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
