@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>754</width>
-    <height>493</height>
+    <height>458</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -28,8 +28,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>450</y>
+     <x>530</x>
+     <y>420</y>
      <width>191</width>
      <height>32</height>
     </rect>
@@ -41,7 +41,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLabel" name="lbl_mep_2">
+  <widget class="QLabel" name="lbl_mep">
    <property name="geometry">
     <rect>
      <x>550</x>
@@ -78,7 +78,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QTextEdit" name="textEdit"/>
+     <widget class="QTextEdit" name="txt_comment"/>
     </item>
     <item>
      <widget class="QLabel" name="lbl_codeeur27_mep">
@@ -101,20 +101,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>460</y>
-     <width>481</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Nota : il est préconisé d'utiliser au maximum le référentiel de DIGITALE2</string>
-   </property>
-  </widget>
-  <widget class="Line" name="line_2">
+  <widget class="Line" name="line">
    <property name="geometry">
     <rect>
      <x>530</x>
@@ -132,11 +119,18 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>511</width>
-     <height>431</height>
+     <width>501</width>
+     <height>441</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <item row="11" column="0">
+     <widget class="QLabel" name="lbl_plantation">
+      <property name="text">
+       <string>Plantation (à cocher si oui)</string>
+      </property>
+     </widget>
+    </item>
     <item row="3" column="1">
      <widget class="QComboBox" name="cbx_habref">
       <property name="maximumSize">
@@ -162,7 +156,7 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
+    <item row="8" column="1">
      <widget class="QLabel" name="txt_codeeur27">
       <property name="maximumSize">
        <size>
@@ -191,7 +185,7 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="6" column="0">
      <widget class="QLabel" name="lbl_hablat">
       <property name="font">
        <font>
@@ -208,7 +202,7 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
+    <item row="6" column="1">
      <widget class="QComboBox" name="cbx_hablat">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -233,14 +227,7 @@
       </property>
      </widget>
     </item>
-    <item row="8" column="0">
-     <widget class="QLabel" name="lbl_plantation">
-      <property name="text">
-       <string>Plantation (à cocher si oui)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="1">
+    <item row="11" column="1">
      <widget class="QCheckBox" name="chx_plantation">
       <property name="maximumSize">
        <size>
@@ -253,122 +240,27 @@
       </property>
      </widget>
     </item>
-    <item row="9" column="0">
+    <item row="12" column="0">
      <widget class="QLabel" name="lbl_evol">
       <property name="text">
        <string>Evolution de l'habitat</string>
       </property>
      </widget>
     </item>
-    <item row="9" column="1">
-     <widget class="QComboBox" name="cbx_habetat">
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <item>
-       <property name="text">
-        <string>Faciès habitats :</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>-  à : (compléter dans la zone de texte ci-dessous)</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- eutrophe</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- ourléifié</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- embroussaillé</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- écorché</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Forme : </string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- pionnière</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- rase</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- haute</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>- mature</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fragmentaire</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Dégradé</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Piétiné</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Rudéralisé</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="10" column="0">
+    <item row="13" column="0">
      <widget class="QLabel" name="lbl_faciesa">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="text">
        <string>Faciès à ...</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="1">
+    <item row="13" column="1">
      <widget class="QLineEdit" name="txt_faciesa">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -401,7 +293,7 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="0">
+    <item row="7" column="0">
      <widget class="QLabel" name="lbl_habfr">
       <property name="font">
        <font>
@@ -413,7 +305,7 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="1">
+    <item row="7" column="1">
      <widget class="QComboBox" name="cbx_habfr">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -455,14 +347,14 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="0">
+    <item row="9" column="0">
      <widget class="QLabel" name="lbl_pourcent">
       <property name="text">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;% dans la mosaïque :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="1">
+    <item row="9" column="1">
      <widget class="QComboBox" name="cbx_pourcent">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -581,7 +473,7 @@
       </item>
      </widget>
     </item>
-    <item row="6" column="0">
+    <item row="8" column="0">
      <widget class="QLabel" name="lbl_codeeur27">
       <property name="enabled">
        <bool>true</bool>
@@ -762,6 +654,80 @@
       <item>
        <property name="text">
         <string>2030</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLabel" name="lbl_refcbnbl">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; color:#ff0000;&quot;&gt;Nota : utiliser au maximum le référentiel de DIGITALE2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="1">
+     <widget class="QListWidget" name="lst_evol">
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+      <item>
+       <property name="text">
+        <string>Dégradé</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Ecorché</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Embroussaillé</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Eutrophe</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Forme haute</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Forme mature</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Forme pionnière</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Forme rase</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Fragmentaire</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Ourléifié</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Piétiné</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Rudéralisé</string>
        </property>
       </item>
      </widget>

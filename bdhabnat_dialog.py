@@ -27,6 +27,8 @@ from PyQt4 import QtCore, QtGui, uic, QtSql, Qt
 from qgis.core import *
 from qgis.gui import *
 from ui_bdhabnat_dialog import Ui_bdhabnat_dialog
+from datetime import datetime
+
 
 class bdhabnatDialog(QtGui.QDialog):
     def __init__(self, iface):
@@ -61,11 +63,18 @@ class bdhabnatDialog(QtGui.QDialog):
             while query_obsv.next():
                 self.ui.cbx_auteur.addItem(query_obsv.value(1) + " " + query_obsv.value(2), query_obsv.value(3) )
 
+        # Combobox cbx_annee : Affecter l'année en cours par défaut en fonction de la date (changement d'année au 28/2/N)
+        if datetime.now().strftime('%m/%d') < '04/02' :
+            self.ui.cbx_annee.setCurrentIndex(self.ui.cbx_annee.findText((str(int(datetime.now().strftime('%Y'))-1)), QtCore.Qt.MatchStartsWith))
+        else:
+            self.ui.cbx_annee.setCurrentIndex(self.ui.cbx_annee.findText((datetime.now().strftime('%Y')), QtCore.Qt.MatchStartsWith))
+
         # Remplir la combobox "cbx_habref" avec les noms de référentiels issus de la table "t_liste_ref"
         query_ref = QtSql.QSqlQuery(self.db)
         if query_ref.exec_('select id_ref, nom_ref, code_ref from bd_habnat.t_liste_ref order by id_ref'):
             while query_ref.next():
                 self.ui.cbx_habref.addItem(query_ref.value(1), query_ref.value(2) )
+            self.ui.cbx_habref.model().item(0).setEnabled(False)
 
         # Remplir la combobox "cbx_eur27_mep" avec le champs hab_cod de la table "t_liste_ref_eur27"
         query_eur27 = QtSql.QSqlQuery(self.db)
@@ -73,46 +82,60 @@ class bdhabnatDialog(QtGui.QDialog):
             while query_eur27.next():
                 self.ui.cbx_eur27_mep.addItem(query_eur27.value(0), query_eur27.value(0) )
 
-
         # Connexions signaux - slots
         self.ui.cbx_habref.currentIndexChanged.connect(self.listesref)
         self.ui.cbx_habfr.currentIndexChanged.connect(self.coreur27)
         self.ui.buttonBox.accepted.connect(self.sauvSaisie)
         self.ui.buttonBox.rejected.connect(self.close)
         self.ui.chx_plantation.stateChanged.connect(self.plantation)
-        self.ui.cbx_habetat.currentIndexChanged.connect(self.facies)
+        self.ui.cbx_hablat.currentIndexChanged.connect(self.listefran)
 
 
 
     def listesref(self):
-        # Réinitialisations
+        # Réinitialisations. 
+        # Attention de bien récupérer la nouvelle valeur de habref avant de vider hablat, pour ne pas lancer inopinément la fonction listefran.
+        self.habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())
         self.ui.cbx_hablat.clear()
         self.ui.cbx_habfr.clear()
         self.ui.txt_codeeur27.clear()
-        self.habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())
+        print 'listesref'
         if self.habref == 'cbnbl':
         # Si le référentiel "Digitale" du CBNBL est sélectionné, alors remplir la combobox "cbx_hablat"
-            print 'cbnbl'
             query_cbnbl = QtSql.QSqlQuery(self.db)
-            qcbnbl = u'select hab_cod, hab_lat from bd_habnat.t_liste_ref_cbnbl order by hab_lat'
+            qcbnbl = u'select hab_cod, hab_lat from (select * from bd_habnat.t_liste_ref_cbnbl UNION select * from bd_habnat.t_liste_ref_newlat_cbnbl) ref order by hab_lat'
             ok = query_cbnbl.exec_(qcbnbl)
-            print unicode(qcbnbl)
             while query_cbnbl.next():
                 self.ui.cbx_hablat.addItem(query_cbnbl.value(1), query_cbnbl.value(0))
+            print 'cbnbl'
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête CBNBL ratée')
-                print unicode(qcbnbl)
+            #self.listefran()
+
         else :
-        # Si un autre référentiel est sélectionné, alors remplir la combobox "cbx_habfr" avec les valeurs de la table correspondant au référentiel.
+        #Si un autre référentiel est sélectionné, alors remplir la combobox "cbx_habfr" avec les valeurs de la table correspondant au référentiel.
             query_autrref = QtSql.QSqlQuery(self.db)
             qautrref = u"""select hab_cod, hab_fr from bd_habnat.t_liste_ref_{zr_table} order by hab_fr""".format(zr_table = str(self.habref))
             ok = query_autrref.exec_(qautrref)
-            print unicode(qautrref)
+            print 'autre'
             while query_autrref.next():
                 self.ui.cbx_habfr.addItem(query_autrref.value(1), query_autrref.value(0))
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête Autre ref ratée')
                 print unicode(qautrref)
+
+    def listefran(self):
+        #Quand le référentiel de Bailleul ou un taxon scientifique est sélectionné, afficher la taxon en français s'il est disponible
+        self.ui.cbx_habfr.clear()
+        if self.habref == 'cbnbl':
+            query_fr = QtSql.QSqlQuery(self.db)
+            qfr = u"""select pk_bss, nom_fran from bd_habnat.t_liste_ref_cbnbl_fr fr inner join bd_habnat.t_liste_ref_cbnbl lat on (fr.pk_bss=lat.hab_cod::character varying) where lat.hab_cod = {zr_codlat} order by nom_fran""".format (zr_codlat = self.ui.cbx_hablat.itemData(self.ui.cbx_hablat.currentIndex()))
+            ok = query_fr.exec_(qfr)
+            print 'listefran'
+            if not ok :
+                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête Hab Fr ratée')
+            while query_fr.next():
+                self.ui.cbx_habfr.addItem(query_fr.value(1), query_fr.value(0) )
 
 
 
@@ -135,16 +158,16 @@ class bdhabnatDialog(QtGui.QDialog):
 
 
 
-    def facies(self):
-        # si l'utiliusateur saisit un "faciès à...", alors la zone de texte "faciès à est activée". Sinon, elle est désactivée.
-        habetat = self.ui.cbx_habetat.itemText(self.ui.cbx_habetat.currentIndex())
-        if habetat == u"""-  à : (compléter dans la zone de texte ci-dessous)""" :
-            self.ui.txt_faciesa.setEnabled(1)
-            self.ui.lbl_faciesa.setEnabled(1)
-        else :
-            self.ui.txt_faciesa.clear()
-            self.ui.txt_faciesa.setEnabled(0)
-            self.ui.lbl_faciesa.setEnabled(0)
+#    def facies(self):
+#        # si l'utiliusateur saisit un "faciès à...", alors la zone de texte "faciès à est activée". Sinon, elle est désactivée.
+#        habetat = self.ui.cbx_habetat.itemText(self.ui.cbx_habetat.currentIndex())
+#        if habetat == u"""-  à : (compléter dans la zone de texte ci-dessous)""" :
+#            self.ui.txt_faciesa.setEnabled(1)
+#            self.ui.lbl_faciesa.setEnabled(1)
+#        else :
+#            self.ui.txt_faciesa.clear()
+#            self.ui.txt_faciesa.setEnabled(0)
+#            self.ui.lbl_faciesa.setEnabled(0)
 
 
 
@@ -179,7 +202,8 @@ class bdhabnatDialog(QtGui.QDialog):
         memlayer.startEditing()
 
 
-# Pour chaque entité sélectionnée, si elle est multipartie, on ajoute chacune de ses parties individuellement à la couche memlayer. Sinon, on l'ajoute directement à "memlayer". Puis, on clot la session d'édition.
+        # Pour chaque entité sélectionnée, si elle est multipartie, on ajoute chacune de ses parties individuellement à la couche memlayer. 
+        # Sinon, on l'ajoute directement à "memlayer". Puis, on clot la session d'édition.
         for feature in coucheactive.selectedFeatures() :
             geom = feature.geometry()
             temp_feature = QgsFeature(feature)
@@ -251,10 +275,7 @@ class bdhabnatDialog(QtGui.QDialog):
                     id_mosaik = int(querybiggestid.value(0))+1
 
 
-
-
-        #lancement de la requête SQL qui introduit les données géographiques et du formulaire dans la base de données.
-
+        # récupération de la rareté, la menace et l'intérêt patrimonial en fonction du taxon sélectionné par l'utilisateur
         self.habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())
         if self.habref == 'cbnbl':
             queryrarmen = QtSql.QSqlQuery(self.db)
@@ -266,14 +287,16 @@ class bdhabnatDialog(QtGui.QDialog):
             queryrarmen.next()
             self.rarete = queryrarmen.value(0)
             self.menace = queryrarmen.value(1)
-#            print str(self.rarete)+" "+str(self.menace)+"
+            self.interetpatr = queryrarmen.value(2)
         else :
-            self.rarete = 'ND'
-            self.menace = 'ND'
+            self.rarete = '/'
+            self.menace = '/'
+            self.interetpatr = '/'
 
 
+        #lancement de la requête SQL qui introduit les données géographiques et du formulaire dans la base de données.
         querysauvhab = QtSql.QSqlQuery(self.db)
-        query = u"""INSERT INTO bd_habnat.t_ce_habnat_surf(codesite, auteur, annee, hab_ref, hab_cod, hab_lat, hab_fr, code_eur27, code_corine, pourcent, rarete, menace, surf_tot, the_geom, plantation, id_mosaik, habetat, faciesa) values ('{zr_codesite}', '{zr_auteur}', '{zr_annee}', '{zr_habref}', '{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', st_area({zr_thegeom}), {zr_thegeom}, {zr_plantation}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}')""".format (\
+        query = u"""INSERT INTO bd_habnat.t_ce_saisie(codesite, auteur, annee, hab_ref, hab_cod, hab_lat, hab_fr, hab_comment , hab_comment_eur27, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, plantation, id_mosaik, hab_etat, faciesa) values ('{zr_codesite}', '{zr_auteur}', '{zr_annee}', '{zr_habref}','{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_habcomment}', '{zr_habcomment_eur27}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_interetpatr}', st_area({zr_thegeom}), {zr_thegeom}, {zr_plantation}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}')""".format (\
         zr_codesite = self.ui.cbx_codesite.itemData(self.ui.cbx_codesite.currentIndex()),\
         zr_auteur = self.ui.cbx_auteur.itemData(self.ui.cbx_auteur.currentIndex()),\
         zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()),\
@@ -281,20 +304,24 @@ class bdhabnatDialog(QtGui.QDialog):
         zr_habcod = '',\
         zr_hablat = self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
         zr_habfr = self.ui.cbx_habfr.itemText(self.ui.cbx_habfr.currentIndex()).replace("\'","\'\'"),\
+        zr_habcomment = self.ui.txt_comment.toPlainText().replace("\'","\'\'"),\
+        zr_habcomment_eur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex()).replace("\'","\'\'"),\
         zr_codeeur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex()),\
         zr_codecorine = str(""),\
         zr_pourcent = self.ui.cbx_pourcent.itemText(self.ui.cbx_pourcent.currentIndex()),\
         zr_rarete = self.rarete,\
         zr_menace = self.menace,\
+        zr_interetpatr = self.interetpatr,\
         zr_thegeom = thegeom,\
         zr_plantation = str(self.ui.chx_plantation.isChecked()).lower(),\
         zr_idmosaik = id_mosaik,\
-        zr_habetat = self.ui.cbx_habetat.itemText(self.ui.cbx_habetat.currentIndex()),\
+        zr_habetat = ";".join([unicode(x.text()) for x in self.ui.lst_evol.selectedItems()]),\
         zr_faciesa = self.ui.txt_faciesa.text().replace("\'","\'\'"))
         ok = querysauvhab.exec_(query)
         if not ok:
             QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
             self.erreurSaisieBase = '1'
+        print query
         self.iface.setActiveLayer(coucheactive)
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
 
