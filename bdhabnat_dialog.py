@@ -225,106 +225,106 @@ class bdhabnatDialog(QtGui.QDialog):
         #on sélectionne toutes les entités de memlayer pour en faire une liste de géométries, qui sera saisie en base.
         memlayer.selectAll()
         geomlis = [QgsGeometry(feature.geometry()) for feature in memlayer.selectedFeatures()]
-        geomlist = QgsGeometry.fromMultiPolygon([poly.asPolygon() for poly in geomlis])
+        #geomlist = QgsGeometry.fromMultiPolygon([poly.asPolygon() for poly in geomlis]) --- transformation en multipolygone
 
-
-        #export de la géométrie en WKT et transformation de la projection si les données ne sont pas saisies en Lambert 93
-        if memlayer.crs().authid() == u'EPSG:2154':
-            thegeom='st_setsrid(st_geometryfromtext (\'{zr_geom}\'), 2154)'.format(zr_geom=geomlist.exportToWkt())
-        elif memlayer.crs().authid() == u'EPSG:4326':
-            thegeom='st_transform(st_setsrid(st_geometryfromtext (\'{zr_geom}\'),4326), 2154)'.format(zr_geom=geomlist.exportToWkt())
-        else :
-            print u'La projection de la couche active n\'est pas supportée'
-
-
-        #gestion de l'identifiant id_mosaik, servant à regrouper les enregistrements appartenant à une même mosaïque d'habitats
-        pourcent = int(self.ui.cbx_pourcent.itemText(self.ui.cbx_pourcent.currentIndex()))
-        if pourcent > 99 :
-            print ">99"
-            id_mosaik = 0
-        else :
-            querymosaik = QtSql.QSqlQuery(self.db)
-            qmosaik = u"""SELECT id_hab_ce, annee, pourcent,the_geom, plantation, id_mosaik FROM bd_habnat.t_ce_habnat_surf WHERE the_geom = {zr_thegeom} AND annee = '{zr_annee}' AND plantation = 'f' """.format (\
-            zr_thegeom = thegeom,\
-            zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()))
-            ok = querymosaik.exec_(qmosaik)
-            if not ok:
-                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête Mosaik ratée')
-            if querymosaik.size() > 0 :
-                print "on est deja dans la mosaique"
-                sumprct = 0
-                while querymosaik.next() :
-                    sumprct += int(querymosaik.value(2))
-                sumprct += pourcent
-                if sumprct > 100 :
-                    QtGui.QMessageBox.warning(self, 'Alerte', u'La somme des pourcentages des habitats dépasse 100 % dans la mosaïque')
-                    return
-                querymosaik.first()
-                id_mosaik = querymosaik.value(5)
+        for entite in geomlis :
+            #export de la géométrie en WKT et transformation de la projection si les données ne sont pas saisies en Lambert 93
+            if memlayer.crs().authid() == u'EPSG:2154':
+                thegeom='st_setsrid(st_geometryfromtext (\'{zr_geom}\'), 2154)'.format(zr_geom=entite.exportToWkt())
+            elif memlayer.crs().authid() == u'EPSG:4326':
+                thegeom='st_transform(st_setsrid(st_geometryfromtext (\'{zr_geom}\'),4326), 2154)'.format(zr_geom=entite.exportToWkt())
             else :
-                querybiggestid = QtSql.QSqlQuery(self.db)
-                qbiggestid = u"""SELECT id_mosaik FROM bd_habnat.t_ce_habnat_surf ORDER BY id_mosaik DESC LIMIT 1"""
-                ok = querybiggestid.exec_(qbiggestid)
+                print u'La projection de la couche active n\'est pas supportée'
+
+
+            #gestion de l'identifiant id_mosaik, servant à regrouper les enregistrements appartenant à une même mosaïque d'habitats
+            pourcent = int(self.ui.cbx_pourcent.itemText(self.ui.cbx_pourcent.currentIndex()))
+            if pourcent > 99 :
+                print ">99"
+                id_mosaik = 0
+            else :
+                querymosaik = QtSql.QSqlQuery(self.db)
+                qmosaik = u"""SELECT id_hab_ce, annee, pourcent,the_geom, plantation, id_mosaik FROM bd_habnat.t_ce_habnat_surf WHERE the_geom = {zr_thegeom} AND annee = '{zr_annee}' AND plantation = 'f' """.format (\
+                zr_thegeom = thegeom,\
+                zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()))
+                ok = querymosaik.exec_(qmosaik)
                 if not ok:
-                    QtGui.QMessageBox.warning(self, 'Alerte', u'Requête PlusGrandIdMosaik ratée')
-                querybiggestid.next()
-                print "debut de la mosaique"
-                if self.ui.chx_plantation.isChecked == True :
-                    id_mosaik = 0
+                    QtGui.QMessageBox.warning(self, 'Alerte', u'Requête Mosaik ratée')
+                if querymosaik.size() > 0 :
+                    print "on est deja dans la mosaique"
+                    sumprct = 0
+                    while querymosaik.next() :
+                        sumprct += int(querymosaik.value(2))
+                    sumprct += pourcent
+                    if sumprct > 100 :
+                        QtGui.QMessageBox.warning(self, 'Alerte', u'La somme des pourcentages des habitats dépasse 100 % dans la mosaïque')
+                        return
+                    querymosaik.first()
+                    id_mosaik = querymosaik.value(5)
                 else :
-                    id_mosaik = int(querybiggestid.value(0))+1
+                    querybiggestid = QtSql.QSqlQuery(self.db)
+                    qbiggestid = u"""SELECT id_mosaik FROM bd_habnat.t_ce_habnat_surf ORDER BY id_mosaik DESC LIMIT 1"""
+                    ok = querybiggestid.exec_(qbiggestid)
+                    if not ok:
+                        QtGui.QMessageBox.warning(self, 'Alerte', u'Requête PlusGrandIdMosaik ratée')
+                    querybiggestid.next()
+                    print "debut de la mosaique"
+                    if self.ui.chx_plantation.isChecked == True :
+                        id_mosaik = 0
+                    else :
+                        id_mosaik = int(querybiggestid.value(0))+1
 
 
-        # récupération de la rareté, la menace et l'intérêt patrimonial en fonction du taxon sélectionné par l'utilisateur
-        self.habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())
-        if self.habref == 'cbnbl':
-            queryrarmen = QtSql.QSqlQuery(self.db)
-            qrarmen = u"""SELECT rarete, menace, interetpatr FROM bd_habnat.t_liste_ref_cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
-            zr_hablat= self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"))
-            okrarmen=queryrarmen.exec_(qrarmen)
-            if not okrarmen :
-                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête RarMen ratée')
-            queryrarmen.next()
-            self.rarete = queryrarmen.value(0)
-            self.menace = queryrarmen.value(1)
-            self.interetpatr = queryrarmen.value(2)
-        else :
-            self.rarete = '/'
-            self.menace = '/'
-            self.interetpatr = '/'
+            # récupération de la rareté, la menace et l'intérêt patrimonial en fonction du taxon sélectionné par l'utilisateur
+            self.habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex())
+            if self.habref == 'cbnbl':
+                queryrarmen = QtSql.QSqlQuery(self.db)
+                qrarmen = u"""SELECT rarete, menace, interetpatr FROM bd_habnat.t_liste_ref_cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
+                zr_hablat= self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"))
+                okrarmen=queryrarmen.exec_(qrarmen)
+                if not okrarmen :
+                    QtGui.QMessageBox.warning(self, 'Alerte', u'Requête RarMen ratée')
+                queryrarmen.next()
+                self.rarete = queryrarmen.value(0)
+                self.menace = queryrarmen.value(1)
+                self.interetpatr = queryrarmen.value(2)
+            else :
+                self.rarete = '/'
+                self.menace = '/'
+                self.interetpatr = '/'
 
 
-        #lancement de la requête SQL qui introduit les données géographiques et du formulaire dans la base de données.
-        querysauvhab = QtSql.QSqlQuery(self.db)
-        query = u"""INSERT INTO bd_habnat.t_ce_saisie(codesite, auteur, annee, hab_ref, hab_cod, hab_lat, hab_fr, hab_comment , hab_comment_eur27, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, plantation, id_mosaik, hab_etat, faciesa) values ('{zr_codesite}', '{zr_auteur}', '{zr_annee}', '{zr_habref}','{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_habcomment}', '{zr_habcomment_eur27}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_interetpatr}', st_area({zr_thegeom}), {zr_thegeom}, {zr_plantation}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}')""".format (\
-        zr_codesite = self.ui.cbx_codesite.itemData(self.ui.cbx_codesite.currentIndex()),\
-        zr_auteur = self.ui.cbx_auteur.itemData(self.ui.cbx_auteur.currentIndex()),\
-        zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()),\
-        zr_habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex()),\
-        zr_habcod = '',\
-        zr_hablat = self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
-        zr_habfr = self.ui.cbx_habfr.itemText(self.ui.cbx_habfr.currentIndex()).replace("\'","\'\'"),\
-        zr_habcomment = self.ui.txt_comment.toPlainText().replace("\'","\'\'"),\
-        zr_habcomment_eur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex()).replace("\'","\'\'"),\
-        zr_codeeur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex()),\
-        zr_codecorine = str(""),\
-        zr_pourcent = self.ui.cbx_pourcent.itemText(self.ui.cbx_pourcent.currentIndex()),\
-        zr_rarete = self.rarete,\
-        zr_menace = self.menace,\
-        zr_interetpatr = self.interetpatr,\
-        zr_thegeom = thegeom,\
-        zr_plantation = str(self.ui.chx_plantation.isChecked()).lower(),\
-        zr_idmosaik = id_mosaik,\
-        zr_habetat = ";".join([unicode(x.text()) for x in self.ui.lst_evol.selectedItems()]),\
-        zr_faciesa = self.ui.txt_faciesa.text().replace("\'","\'\'"))
-        ok = querysauvhab.exec_(query)
-        if not ok:
-            QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
-            self.erreurSaisieBase = '1'
-        print query
+            #lancement de la requête SQL qui introduit les données géographiques et du formulaire dans la base de données.
+            querysauvhab = QtSql.QSqlQuery(self.db)
+            query = u"""INSERT INTO bd_habnat.t_ce_saisie(codesite, auteur, annee, hab_ref, hab_cod, hab_lat, hab_fr, hab_comment , hab_comment_eur27, code_eur27, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, plantation, id_mosaik, hab_etat, faciesa) values ('{zr_codesite}', '{zr_auteur}', '{zr_annee}', '{zr_habref}','{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_habcomment}', '{zr_habcomment_eur27}', '{zr_codeeur27}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_interetpatr}', st_area({zr_thegeom}), {zr_thegeom}, {zr_plantation}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}')""".format (\
+            zr_codesite = self.ui.cbx_codesite.itemData(self.ui.cbx_codesite.currentIndex()),\
+            zr_auteur = self.ui.cbx_auteur.itemData(self.ui.cbx_auteur.currentIndex()),\
+            zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()),\
+            zr_habref = self.ui.cbx_habref.itemData(self.ui.cbx_habref.currentIndex()),\
+            zr_habcod = '',\
+            zr_hablat = self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"),\
+            zr_habfr = self.ui.cbx_habfr.itemText(self.ui.cbx_habfr.currentIndex()).replace("\'","\'\'"),\
+            zr_habcomment = self.ui.txt_comment.toPlainText().replace("\'","\'\'"),\
+            zr_habcomment_eur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex()).replace("\'","\'\'"),\
+            zr_codeeur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex()),\
+            zr_codecorine = str(""),\
+            zr_pourcent = self.ui.cbx_pourcent.itemText(self.ui.cbx_pourcent.currentIndex()),\
+            zr_rarete = self.rarete,\
+            zr_menace = self.menace,\
+            zr_interetpatr = self.interetpatr,\
+            zr_thegeom = thegeom,\
+            zr_plantation = str(self.ui.chx_plantation.isChecked()).lower(),\
+            zr_idmosaik = id_mosaik,\
+            zr_habetat = ";".join([unicode(x.text()) for x in self.ui.lst_evol.selectedItems()]),\
+            zr_faciesa = self.ui.txt_faciesa.text().replace("\'","\'\'"))
+            ok = querysauvhab.exec_(query)
+            if not ok:
+                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
+                self.erreurSaisieBase = '1'
+            print query
         self.iface.setActiveLayer(coucheactive)
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
-
+    
         if self.erreurSaisieBase == '0':
             QtGui.QMessageBox.information(self, 'Information', u'Données correctement saisies dans la base')
         else : 
