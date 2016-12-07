@@ -50,7 +50,7 @@ PY_FILES = \
 
 UI_FILES = ui_bdhabnat_dialog.py
 
-EXTRAS = icon.png metadata.txt
+EXTRAS = icon2.png metadata.txt
 
 COMPILED_RESOURCE_FILES = resources_rc.py
 

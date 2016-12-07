@@ -321,7 +321,6 @@ class bdhabnatDialog(QtGui.QDialog):
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
                 self.erreurSaisieBase = '1'
-            print query
         self.iface.setActiveLayer(coucheactive)
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
     
