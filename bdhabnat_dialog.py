@@ -43,7 +43,7 @@ class bdhabnatDialog(QtGui.QDialog):
         
         # Connexion à la base de données. DB type, host, user, password...
         self.db = QtSql.QSqlDatabase.addDatabase("QPSQL") # QPSQL = nom du pilote postgreSQL
-        self.db.setHostName("127.0.0.10") 
+        self.db.setHostName("192.168.0.10") 
         self.db.setDatabaseName("sitescsn")
         self.db.setUserName("postgres")
         self.db.setPassword("postgres")
@@ -291,6 +291,16 @@ class bdhabnatDialog(QtGui.QDialog):
                 self.rarete = '/'
                 self.menace = '/'
                 self.interetpatr = '/'
+
+            # construction de pat_cen en fonction de interetpatr
+            querypatcen = QtSql.QSqlQuery(self.db)
+            qpatcen = u""" SELECT CASE WHEN cbnbl.interetpatr IN ('Oui','#') THEN True ELSE False END FROM bd_habnat.t_liste_ref_cbnbl cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
+                zr_hablat= self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"))
+            okpatcen = querypatcen.exec_(qpatcen)
+            if not okpatcen :
+                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête PatCen ratée')
+            querypatcen.next()
+            self.pat_cen = querypatcen.value(0)
             
             # aller chercher hab_cod dans la cbx "lat" si self.habref = cbnbl, sinon dans cbx "fr".
             # aller chercher code_syntax, code_cahab, code_eunis et code_corine dans itemData cbx_hablat ou cbx_habfr, selon le référentiel choisi
@@ -328,9 +338,11 @@ class bdhabnatDialog(QtGui.QDialog):
                 else :
                     self.codeeur27 = self.ui.cbx_eur27_mep.itemText(self.ui.cbx_eur27_mep.currentIndex())
 
+            
+
             #lancement de la requête SQL qui introduit les données géographiques et du formulaire dans la base de données.
             querysauvhab = QtSql.QSqlQuery(self.db)
-            query = u"""INSERT INTO bd_habnat.t_ce_saisie(codesite, auteur, annee, hab_ref, hab_cod, hab_lat, hab_fr, hab_comment, code_syntax, code_cahab, code_eur27, code_eunis, code_corine, pourcent, rarete, menace, patrimoine, surf_tot, the_geom, plantation, id_mosaik, hab_etat, faciesa, date_crea_poly) VALUES ('{zr_codesite}', '{zr_auteur}', '{zr_annee}', '{zr_habref}','{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_habcomment}', '{zr_codesyntax}', '{zr_codecahab}', '{zr_codeeur27}', '{zr_codeeunis}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_interetpatr}', st_area({zr_thegeom}), {zr_thegeom}, {zr_plantation}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}', current_date)""".format (\
+            query = u"""INSERT INTO bd_habnat.t_ce_saisie(codesite, auteur, annee, hab_ref, hab_cod, hab_lat, hab_fr, hab_comment, code_syntax, code_cahab, code_eur27, code_eunis, code_corine, pourcent, rarete, menace, patrimoine, pat_cen, surf_tot, the_geom, plantation, id_mosaik, hab_etat, faciesa, date_crea_poly) VALUES ('{zr_codesite}', '{zr_auteur}', '{zr_annee}', '{zr_habref}','{zr_habcod}', '{zr_hablat}', '{zr_habfr}', '{zr_habcomment}', '{zr_codesyntax}', '{zr_codecahab}', '{zr_codeeur27}', '{zr_codeeunis}', '{zr_codecorine}', '{zr_pourcent}', '{zr_rarete}', '{zr_menace}', '{zr_interetpatr}', {zr_pat_cen}, st_area({zr_thegeom}), {zr_thegeom}, {zr_plantation}, {zr_idmosaik}, '{zr_habetat}', '{zr_faciesa}', current_date)""".format (\
             zr_codesite = self.ui.cbx_codesite.itemData(self.ui.cbx_codesite.currentIndex()),\
             zr_auteur = self.ui.cbx_auteur.itemData(self.ui.cbx_auteur.currentIndex()),\
             zr_annee = self.ui.cbx_annee.itemText(self.ui.cbx_annee.currentIndex()),\
@@ -348,6 +360,7 @@ class bdhabnatDialog(QtGui.QDialog):
             zr_rarete = self.rarete,\
             zr_menace = self.menace,\
             zr_interetpatr = self.interetpatr,\
+            zr_pat_cen = self.pat_cen,\
             zr_thegeom = thegeom,\
             zr_plantation = str(self.ui.chx_plantation.isChecked()).lower(),\
             zr_idmosaik = id_mosaik,\
@@ -357,7 +370,7 @@ class bdhabnatDialog(QtGui.QDialog):
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
                 self.erreurSaisieBase = '1'
-                print query
+            print query
         self.iface.setActiveLayer(coucheactive)
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
 
