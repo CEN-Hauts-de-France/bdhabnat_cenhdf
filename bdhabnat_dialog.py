@@ -108,14 +108,15 @@ class bdhabnatDialog(QtGui.QDialog):
         if self.habref == 'cbnbl':
         # Si le référentiel "Digitale" du CBNBL est sélectionné, alors remplir la combobox "cbx_hablat"
             query_cbnbl = QtSql.QSqlQuery(self.db)
-            qcbnbl = u'select hab_cod, hab_lat from (select * from bd_habnat.t_liste_ref_cbnbl UNION select * from bd_habnat.t_liste_ref_newlat_cbnbl) ref order by hab_lat'
+            qcbnbl = u'select hab_cod, hab_lat from (select * from bd_habnat.t_liste_ref_cbnbl_v12 UNION select * from bd_habnat.t_liste_ref_newlat_cbnbl) ref order by hab_lat'
             ok = query_cbnbl.exec_(qcbnbl)
             while query_cbnbl.next():
                 self.ui.cbx_hablat.addItem(query_cbnbl.value(1), query_cbnbl.value(0))
             print 'cbnbl'
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête CBNBL ratée')
-            #self.listefran()
+                print qcbnbl
+            self.listefran()
 
         else :
         #Si un autre référentiel est sélectionné, alors remplir la combobox "cbx_habfr" avec les valeurs de la table correspondant au référentiel.
@@ -137,7 +138,7 @@ class bdhabnatDialog(QtGui.QDialog):
         self.ui.cbx_habfr.clear()
         if self.habref == 'cbnbl':
             query_fr = QtSql.QSqlQuery(self.db)
-            qfr = u"""select pk_bss, nom_fran from bd_habnat.t_liste_ref_cbnbl_fr fr inner join bd_habnat.t_liste_ref_cbnbl lat on (fr.pk_bss=lat.hab_cod::character varying) where lat.hab_cod = {zr_codlat} order by nom_fran""".format (zr_codlat = self.ui.cbx_hablat.itemData(self.ui.cbx_hablat.currentIndex()))
+            qfr = u"""select hab_cod, hab_fr from bd_habnat.t_liste_ref_cbnbl_v12 cbnbl where cbnbl.hab_cod = {zr_codlat} order by hab_fr""".format (zr_codlat = self.ui.cbx_hablat.itemData(self.ui.cbx_hablat.currentIndex()))
             ok = query_fr.exec_(qfr)
             print 'listefran'
             if not ok :
@@ -195,6 +196,9 @@ class bdhabnatDialog(QtGui.QDialog):
             memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:4326".format(zr_typegeom = typegeom), "memlayer", "memory")
         if coucheactive.crs().authid() == u'EPSG:2154':
             memlayer=QgsVectorLayer("{zr_typegeom}?crs=epsg:2154".format(zr_typegeom = typegeom), "memlayer", "memory")
+        else :
+            QtGui.QMessageBox.warning(self, 'Alerte', u'Les seules projections supportées sont le WGS84 et le Lambert93. Merci de vérifier la projection de votre couche SIG')
+            return
         QgsMapLayerRegistry.instance().addMapLayer(memlayer, False)
         root = QgsProject.instance().layerTreeRoot()
         memlayerNode = QgsLayerTreeLayer(memlayer)
@@ -278,7 +282,7 @@ class bdhabnatDialog(QtGui.QDialog):
             # si ref = cbnbl : recup rareté, menace et intérêt patri en fonction du taxon sélectionné par l'utilisateur
             if self.habref == 'cbnbl':
                 queryrarmen = QtSql.QSqlQuery(self.db)
-                qrarmen = u"""SELECT rarete, menace, interetpatr FROM bd_habnat.t_liste_ref_cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
+                qrarmen = u"""SELECT rarete, menace, interetpatr FROM bd_habnat.t_liste_ref_cbnbl_v12 WHERE hab_lat = '{zr_hablat}'""".format (\
                 zr_hablat= self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"))
                 okrarmen=queryrarmen.exec_(qrarmen)
                 if not okrarmen :
@@ -287,21 +291,22 @@ class bdhabnatDialog(QtGui.QDialog):
                 self.rarete = queryrarmen.value(0)
                 self.menace = queryrarmen.value(1)
                 self.interetpatr = queryrarmen.value(2)
+                # construction de pat_cen en fonction de intérêt patri
+                querypatcen = QtSql.QSqlQuery(self.db)
+                qpatcen = u""" SELECT CASE WHEN cbnbl.interetpatr IN ('Oui','#') THEN True ELSE False END FROM bd_habnat.t_liste_ref_cbnbl_v12 cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
+                    zr_hablat= self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"))
+                okpatcen = querypatcen.exec_(qpatcen)
+                if not okpatcen :
+                    QtGui.QMessageBox.warning(self, 'Alerte', u'Requête PatCen ratée')
+                querypatcen.next()
+                self.pat_cen = querypatcen.value(0)
+            # si ref != cbnbl : rareté, menace, intérêt patri = '/' et pat_cen = False
             else :
                 self.rarete = '/'
                 self.menace = '/'
                 self.interetpatr = '/'
+                self.pat_cen = 'false'
 
-            # construction de pat_cen en fonction de interetpatr
-            querypatcen = QtSql.QSqlQuery(self.db)
-            qpatcen = u""" SELECT CASE WHEN cbnbl.interetpatr IN ('Oui','#') THEN True ELSE False END FROM bd_habnat.t_liste_ref_cbnbl cbnbl WHERE hab_lat = '{zr_hablat}'""".format (\
-                zr_hablat= self.ui.cbx_hablat.itemText(self.ui.cbx_hablat.currentIndex()).replace("\'","\'\'"))
-            okpatcen = querypatcen.exec_(qpatcen)
-            if not okpatcen :
-                QtGui.QMessageBox.warning(self, 'Alerte', u'Requête PatCen ratée')
-            querypatcen.next()
-            self.pat_cen = querypatcen.value(0)
-            
             # aller chercher hab_cod dans la cbx "lat" si self.habref = cbnbl, sinon dans cbx "fr".
             # aller chercher code_syntax, code_cahab, code_eunis et code_corine dans itemData cbx_hablat ou cbx_habfr, selon le référentiel choisi
             if self.habref == 'cbnbl':
@@ -370,10 +375,13 @@ class bdhabnatDialog(QtGui.QDialog):
             if not ok:
                 QtGui.QMessageBox.warning(self, 'Alerte', u'Requête sauver Ope ratée')
                 self.erreurSaisieBase = '1'
-            print query
         self.iface.setActiveLayer(coucheactive)
         QgsMapLayerRegistry.instance().removeMapLayer(memlayer.id())
 
+        # Réinitialiser certains contrôles
+        self.ui.lst_evol.clearSelection()
+        self.ui.txt_faciesa.setText('')
+        self.ui.txt_comment.setText('')
         self.ui.cbx_eur27_mep.setCurrentIndex(0)
     
         if self.erreurSaisieBase == '0':
